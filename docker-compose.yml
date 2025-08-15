@@ -1,0 +1,47 @@
+version: "3.7"
+services:
+  application-db:
+    image: postgres:16
+    container_name: application-db
+    environment:
+      POSTGRES_DB: application
+      POSTGRES_USER: admin_user
+      POSTGRES_PASSWORD: application_password
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin_user -d application"]
+      interval: 1s
+      timeout: 10s
+      retries: 5
+  
+  application:
+    build:
+      context: ./src
+      dockerfile: ./src/PlantBasedPizza.Api/application/PlantBasedPizza.Api/Dockerfile
+    container_name: plant-based-pizza
+    depends_on:
+      application-db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__RecipesPostgresConnection: "Host=application-db;Port=5432;Database=application;Username=admin_user;Password=application_password"
+      ConnectionStrings__OrderManagerPostgresConnection: "Host=application-db;Port=5432;Database=application;Username=admin_user;Password=application_password"
+      ConnectionStrings__KitchenPostgresConnection: "Host=application-db;Port=5432;Database=application;Username=admin_user;Password=application_password"
+      ConnectionStrings__DeliveryPostgresConnection: "Host=application-db;Port=5432;Database=application;Username=admin_user;Password=application_password"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/utils/__migrate"]
+      interval: 1s
+      timeout: 15s
+      retries: 5
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+
+  jaeger:
+    image: jaegertracing/opentelemetry-all-in-one:latest
+    ports:
+      - 16686:16686
+      - 13133:13133
+      - 4317:4317
+      - 4318:4318

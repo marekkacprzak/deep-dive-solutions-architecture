@@ -1,0 +1,1 @@
+docker build -f src/PlantBasedPizza.Api/application/PlantBasedPizza.Api/Dockerfile -t plant-based-pizza-api-mod-1 ./src |

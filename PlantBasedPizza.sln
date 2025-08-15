@@ -31,16 +31,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBasedPizza.Recipes.Infrastructure", "src\PlantBasedPizza.Api\modules\recipes\PlantBasedPizza.Recipes.Infrastructure\PlantBasedPizza.Recipes.Infrastructure.csproj", "{105637E9-08EF-4343-8065-3B35E5648046}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E630CA1B-339D-4697-9FFF-AB9D64C9507D}"
-ProjectSection(SolutionItems) = preProject
-	acceptance.sh = acceptance.sh
-	commit.sh = commit.sh
-EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "host", "host", "{3A26A029-7C47-4975-AA1F-52384C345FCD}"
-	ProjectSection(SolutionItems) = preProject
-		docker-compose.yml = docker-compose.yml
-		src\PlantBasedPizza.Api\application\PlantBasedPizza.Api\Dockerfile = src\PlantBasedPizza.Api\application\PlantBasedPizza.Api\Dockerfile
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBasedPizza.Api", "src\PlantBasedPizza.Api\application\PlantBasedPizza.Api\PlantBasedPizza.Api.csproj", "{77042AE0-1337-4133-9073-A7C33EBD3DCC}"
 EndProject
@@ -56,37 +46,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBasedPizza.UnitTest", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBasedPizza.IntegrationTests", "src\PlantBasedPizza.Api\tests\PlantBasedPizza.IntegrationTests\PlantBasedPizza.IntegrationTests.csproj", "{CFADAAB9-64E1-42A6-8F09-CE5A328F076F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PlantBasedPizza.Api", "PlantBasedPizza.Api", "{07E71142-470D-4AAF-82A8-2BF9AFA34EA6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBasedPizza.Recipes.DataTransfer", "src\PlantBasedPizza.Api\modules\recipes\PlantBasedPizza.Recipes.DataTransfer\PlantBasedPizza.Recipes.DataTransfer.csproj", "{11DD1F7E-D007-4ABA-9EB7-115957C76AAD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBasedPizza.OrderManager.DataTransfer", "src\PlantBasedPizza.Api\modules\order-manager\PlantBasedPizza.OrderManager.DataTransfer\PlantBasedPizza.OrderManager.DataTransfer.csproj", "{2630CB86-018A-4EE6-9EF7-5E81551AD6C0}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infra", "infra", "{E036394A-EB67-4FC8-9C66-3385053F69E9}"
-	ProjectSection(SolutionItems) = preProject
-		Makefile = Makefile
-		docker-compose.yml = docker-compose.yml
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aws", "aws", "{B6E7DB2D-5CF0-4C43-B515-77A38E9FA1D5}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure", "azure", "{32AD6217-49BB-4387-B0CB-46BDABA54449}"
-	ProjectSection(SolutionItems) = preProject
-		azure\variables.tf = azure\variables.tf
-		azure\data.tf = azure\data.tf
-		azure\identity.tf = azure\identity.tf
-		azure\main.tf = azure\main.tf
-		azure\provider.tf = azure\provider.tf
-		azure\pubsub.tf = azure\pubsub.tf
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwsInfrastructure", "aws\src\AwsInfrastructure\AwsInfrastructure.csproj", "{87FEC115-921F-4604-9555-81E2F25629DD}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure-pulumi", "azure-pulumi", "{D4DB374A-50CC-4457-89F0-F0475C97D982}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBasedPizza.Pulumi", "azure-pulumi\PlantBasedPizza.Pulumi.csproj", "{717275F9-74C1-471A-8A20-282C5638C308}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBasedPizza_FunctionApp", "src\PlantBasedPizza.Api\application\PlantBasedPizza.FunctionApp\PlantBasedPizza_FunctionApp.csproj", "{4ABE5D7B-FE8F-4776-913A-153F62CEFFA9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBasedPizza.Aspire", "src\PlantBasedPizza.Aspire\PlantBasedPizza.Aspire.csproj", "{FA2CC564-1D56-4422-99AB-BF9A0EEA9482}"
 EndProject
@@ -119,24 +81,14 @@ Global
 		{D88A93D9-9419-4270-936F-8701322B87D9} = {4F6B9B90-B516-4E61-860E-6B2F3F90B2B6}
 		{44A6F600-FB7F-4ECD-955C-D31AAC9B63CD} = {58236992-81BC-446A-814B-95D5D101A705}
 		{105637E9-08EF-4343-8065-3B35E5648046} = {58236992-81BC-446A-814B-95D5D101A705}
-		{77042AE0-1337-4133-9073-A7C33EBD3DCC} = {3A26A029-7C47-4975-AA1F-52384C345FCD}
 		{22DC111E-0E05-48BD-B40C-24B6848075C2} = {682A9C61-5D3D-466E-9EAF-C1ABF01F99D8}
 		{9D3A9574-D5AA-40F9-99D5-62597FC5DF60} = {22DC111E-0E05-48BD-B40C-24B6848075C2}
 		{256FCDB5-2230-492A-BE42-58E57DDCCE09} = {22DC111E-0E05-48BD-B40C-24B6848075C2}
 		{3A09684B-8D40-44A0-8CD1-0BEE41F0FB07} = {93B400D7-1E45-435D-935F-7DE6F032070A}
 		{738353DC-925A-46E0-AACD-D9090E26564B} = {E630CA1B-339D-4697-9FFF-AB9D64C9507D}
 		{CFADAAB9-64E1-42A6-8F09-CE5A328F076F} = {E630CA1B-339D-4697-9FFF-AB9D64C9507D}
-		{3A26A029-7C47-4975-AA1F-52384C345FCD} = {07E71142-470D-4AAF-82A8-2BF9AFA34EA6}
-		{682A9C61-5D3D-466E-9EAF-C1ABF01F99D8} = {07E71142-470D-4AAF-82A8-2BF9AFA34EA6}
-		{E630CA1B-339D-4697-9FFF-AB9D64C9507D} = {07E71142-470D-4AAF-82A8-2BF9AFA34EA6}
 		{11DD1F7E-D007-4ABA-9EB7-115957C76AAD} = {58236992-81BC-446A-814B-95D5D101A705}
 		{2630CB86-018A-4EE6-9EF7-5E81551AD6C0} = {4F6B9B90-B516-4E61-860E-6B2F3F90B2B6}
-		{B6E7DB2D-5CF0-4C43-B515-77A38E9FA1D5} = {E036394A-EB67-4FC8-9C66-3385053F69E9}
-		{32AD6217-49BB-4387-B0CB-46BDABA54449} = {E036394A-EB67-4FC8-9C66-3385053F69E9}
-		{87FEC115-921F-4604-9555-81E2F25629DD} = {B6E7DB2D-5CF0-4C43-B515-77A38E9FA1D5}
-		{D4DB374A-50CC-4457-89F0-F0475C97D982} = {E036394A-EB67-4FC8-9C66-3385053F69E9}
-		{717275F9-74C1-471A-8A20-282C5638C308} = {D4DB374A-50CC-4457-89F0-F0475C97D982}
-		{4ABE5D7B-FE8F-4776-913A-153F62CEFFA9} = {3A26A029-7C47-4975-AA1F-52384C345FCD}
 		{C5ADB470-AE21-4D15-9179-70C05C340663} = {682A9C61-5D3D-466E-9EAF-C1ABF01F99D8}
 		{F886BA31-A5B9-49A9-A4DB-E5A0BB45027A} = {C5ADB470-AE21-4D15-9179-70C05C340663}
 		{E379E05C-0CE7-4305-8594-21B4681165C9} = {C5ADB470-AE21-4D15-9179-70C05C340663}
@@ -204,18 +156,6 @@ Global
 		{2630CB86-018A-4EE6-9EF7-5E81551AD6C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2630CB86-018A-4EE6-9EF7-5E81551AD6C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2630CB86-018A-4EE6-9EF7-5E81551AD6C0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{87FEC115-921F-4604-9555-81E2F25629DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{87FEC115-921F-4604-9555-81E2F25629DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{87FEC115-921F-4604-9555-81E2F25629DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{87FEC115-921F-4604-9555-81E2F25629DD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{717275F9-74C1-471A-8A20-282C5638C308}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{717275F9-74C1-471A-8A20-282C5638C308}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{717275F9-74C1-471A-8A20-282C5638C308}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{717275F9-74C1-471A-8A20-282C5638C308}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4ABE5D7B-FE8F-4776-913A-153F62CEFFA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4ABE5D7B-FE8F-4776-913A-153F62CEFFA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4ABE5D7B-FE8F-4776-913A-153F62CEFFA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4ABE5D7B-FE8F-4776-913A-153F62CEFFA9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FA2CC564-1D56-4422-99AB-BF9A0EEA9482}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FA2CC564-1D56-4422-99AB-BF9A0EEA9482}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA2CC564-1D56-4422-99AB-BF9A0EEA9482}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -1,8 +1,5 @@
 using System.Threading.RateLimiting;
-using Amazon;
-using Amazon.SimpleSystemsManagement;
 using Microsoft.EntityFrameworkCore;
-using PlantBasedPizza.Api;
 using PlantBasedPizza.Deliver.Infrastructure;
 using PlantBasedPizza.Kitchen.Infrastructure;
 using PlantBasedPizza.OrderManager.Infrastructure;
@@ -34,21 +31,6 @@ builder
     .AddEnvironmentVariables();
 
 var overrideConnectionString = Environment.GetEnvironmentVariable("OVERRIDE_CONNECTION_STRING");
-var connectionStringParameterName = Environment.GetEnvironmentVariable("ConnectionStringParameterName");
-
-if (!string.IsNullOrEmpty(connectionStringParameterName))
-{
-    var ssmClient = new AmazonSimpleSystemsManagementClient();
-    var parameter = await ssmClient.GetParameterAsync(new Amazon.SimpleSystemsManagement.Model.GetParameterRequest
-    {
-        Name = connectionStringParameterName,
-        WithDecryption = true
-    });
-    overrideConnectionString = parameter.Parameter.Value;
-    logger.Information("Connection string overridden from SSM parameter: {ParameterName}", connectionStringParameterName);
-}
-
-builder.Services.AddLambda(logger);
 
 // Connect to a PostgreSQL database.
 builder.Services.AddOrderManagerInfrastructure(builder.Configuration, overrideConnectionString)
@@ -88,15 +70,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 
 var app = builder.Build();
-
-Amazon.Lambda.Core.SnapshotRestore.RegisterBeforeSnapshot(async () =>
-{
-    logger.Information("Before snapshot");
-
-    var myDbContext = app.Services.GetRequiredService<OrderManagerDbContext>();
-            
-    logger.Information("Before snapshot finished");
-});
 
 app.UseCors("AllowAll");
 

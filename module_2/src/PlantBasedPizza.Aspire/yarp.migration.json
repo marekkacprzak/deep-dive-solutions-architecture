@@ -1,0 +1,36 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "ReverseProxy": {
+    "Routes": {
+      "api": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/{**catch-all}"
+        },
+        "Transforms": [
+        ]
+      }
+    },
+    "Clusters": {
+      "api": {
+        "Destinations": {
+          "instance-one": {
+            "Address": "http://instance-one"
+          },
+          "instance-two": {
+            "Address": "http://instance-two"
+          },
+          "instance-three": {
+            "Address": "http://instance-three"
+          }
+        }
+      }
+    }
+  }
+}

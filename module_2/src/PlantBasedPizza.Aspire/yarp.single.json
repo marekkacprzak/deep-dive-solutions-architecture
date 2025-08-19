@@ -1,0 +1,30 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "ReverseProxy": {
+    "Routes": {
+      "api": {
+        "ClusterId": "api",
+        "Match": {
+          "Path": "/{**catch-all}"
+        },
+        "Transforms": [
+        ]
+      }
+    },
+    "Clusters": {
+      "api": {
+        "Destinations": {
+          "api": {
+            "Address": "http://api"
+          }
+        }
+      }
+    }
+  }
+}

@@ -20,6 +20,8 @@ namespace PlantBasedPizza.OrderManager.Core.Handlers
         [SubscribeOperation(typeof(OrderQualityCheckedEvent), Summary = "Handle an order quality event.", OperationId = "kitchen.quality-checked")]
         public async Task Handle(OrderQualityCheckedEvent evt)
         {
+            using var processSpan = evt.StartProcessActivity();
+
             var order = await this._orderRepository.Retrieve(evt.OrderIdentifier);
 
             order.AddHistory("Order quality checked");

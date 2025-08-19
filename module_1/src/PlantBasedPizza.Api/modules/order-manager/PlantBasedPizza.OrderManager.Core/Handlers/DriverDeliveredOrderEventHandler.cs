@@ -20,7 +20,9 @@ namespace PlantBasedPizza.OrderManager.Core.Handlers
         [SubscribeOperation(typeof(OrderDeliveredEvent), Summary = "Handle an order delivered event.", OperationId = "delivery.order-delivered")]
         public async Task Handle(OrderDeliveredEvent evt)
         {
-            await _completeOrderCommandHandler.Handle(new CompleteOrderCommand 
+            using var processSpan = evt.StartProcessActivity();
+
+            await _completeOrderCommandHandler.Handle(new CompleteOrderCommand
             { 
                 OrderIdentifier = evt.OrderIdentifier,
                 CorrelationId = evt.CorrelationId

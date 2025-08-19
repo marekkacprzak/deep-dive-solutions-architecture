@@ -21,6 +21,8 @@ namespace PlantBasedPizza.OrderManager.Core.Handlers
         [SubscribeOperation(typeof(OrderPrepCompleteEvent), Summary = "Handle an order prep completed event.", OperationId = "kitchen.prep-complete")]
         public async Task Handle(OrderPrepCompleteEvent evt)
         {
+            using var processSpan = evt.StartProcessActivity();
+
             this._logger.LogInformation("[ORDER-MANAGER] Handling order prep complete event");
             
             var order = await this._orderRepository.Retrieve(evt.OrderIdentifier);

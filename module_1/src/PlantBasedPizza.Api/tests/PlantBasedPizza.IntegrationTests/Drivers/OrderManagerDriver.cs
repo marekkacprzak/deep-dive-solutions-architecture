@@ -27,30 +27,32 @@ namespace PlantBasedPizza.IntegrationTests.Drivers
             this._httpClient = new HttpClient();
         }
 
-        public async Task AddNewDeliveryOrder(string orderIdentifier)
+        public async Task<Order> AddNewDeliveryOrder()
         {
-            await this._httpClient.PostAsync(new Uri($"{BaseUrl}/order/deliver"), new StringContent(
+            var response = await this._httpClient.PostAsync(new Uri($"{BaseUrl}/order/deliver"), new StringContent(
                 JsonSerializer.Serialize(new CreateDeliveryOrder()
                 {
-                    OrderIdentifier = orderIdentifier,
                     CustomerIdentifier = "James",
                     AddressLine1 = "My test address",
                     AddressLine2 = string.Empty,
                     AddressLine3 = string.Empty,
                     AddressLine4 = string.Empty,
                     AddressLine5 = string.Empty,
-                    Postcode = "TYi9PO"
+                    Postcode = "TY2 9PO"
                 }, _jsonSerializerOptions), Encoding.UTF8, "application/json")).ConfigureAwait(false);
+            
+            return JsonSerializer.Deserialize<Order>(await response.Content.ReadAsStringAsync().ConfigureAwait(false), _jsonSerializerOptions);
         }
 
-        public async Task AddNewOrder(string orderIdentifier)
+        public async Task<Order> AddNewOrder()
         {
-            await this._httpClient.PostAsync(new Uri($"{BaseUrl}/order/pickup"), new StringContent(
+            var response = await this._httpClient.PostAsync(new Uri($"{BaseUrl}/order/pickup"), new StringContent(
                 JsonSerializer.Serialize(new CreatePickupOrderCommand()
                 {
-                    OrderIdentifier = orderIdentifier,
                     CustomerIdentifier = "James"
                 },_jsonSerializerOptions), Encoding.UTF8, "application/json")).ConfigureAwait(false);
+            
+            return JsonSerializer.Deserialize<Order>(await response.Content.ReadAsStringAsync().ConfigureAwait(false), _jsonSerializerOptions);
         }
 
         public async Task AddItemToOrder(string orderIdentifier, string recipeIdentifier, int quantity)

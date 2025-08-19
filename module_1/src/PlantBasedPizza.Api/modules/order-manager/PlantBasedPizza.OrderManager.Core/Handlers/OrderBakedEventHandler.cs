@@ -18,6 +18,8 @@ namespace PlantBasedPizza.OrderManager.Core.Handlers
         [SubscribeOperation(typeof(OrderBakedEvent), Summary = "Handle an order baked event.", OperationId = "kitchen.baked")]
         public async Task Handle(OrderBakedEvent evt)
         {
+            using var processSpan = evt.StartProcessActivity();
+
             var order = await this._orderRepository.Retrieve(evt.OrderIdentifier);
 
             order.AddHistory("Order baked");

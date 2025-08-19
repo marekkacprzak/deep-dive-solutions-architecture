@@ -2,12 +2,16 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
 // Copyright 2025 Datadog, Inc.
 
+using System.Diagnostics;
+
 namespace PlantBasedPizza.Payment.Core;
 
-public class TakePaymentCommandHandler(IPaymentProvider provider)
+public class TakePaymentCommandHandler(IPaymentProvider provider, ActivitySource activitySource)
 {
     public async Task<PaymentResult> Handle(TakePaymentCommand command)
     {
+        using var activity = activitySource.StartActivity("handle payment.takePayment");
+
         if (command.Amount <= 0)
         {
             return new  PaymentResult()

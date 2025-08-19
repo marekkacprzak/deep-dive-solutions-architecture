@@ -17,6 +17,8 @@ namespace PlantBasedPizza.Deliver.Core.Handlers
         [SubscribeOperation(typeof(OrderReadyForDeliveryEvent), Summary = "Handle an order ready for delivery event.", OperationId = "order-manager.ready-for-delivery")]
         public async Task Handle(OrderReadyForDeliveryEvent evt)
         {
+            using var processSpan = evt.StartProcessActivity();
+
             if (evt == null)
             {
                 throw new ArgumentNullException(nameof(evt), "Handled event cannot be null");

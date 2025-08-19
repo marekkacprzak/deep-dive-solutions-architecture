@@ -1,5 +1,4 @@
 using PlantBasedPizza.OrderManager.Core.CompleteOrder;
-using PlantBasedPizza.OrderManager.Core.Services;
 
 namespace PlantBasedPizza.OrderManager.Core.CollectOrder;
 

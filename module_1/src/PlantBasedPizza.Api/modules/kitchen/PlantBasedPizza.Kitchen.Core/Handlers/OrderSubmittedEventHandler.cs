@@ -29,6 +29,8 @@ namespace PlantBasedPizza.Kitchen.Core.Handlers
         [SubscribeOperation(typeof(OrderSubmittedEvent), Summary = "Handle an order submitted event.", OperationId = "order-manager.order-submitted")]
         public async Task Handle(OrderSubmittedEvent evt)
         {
+            using var processSpan = evt.StartProcessActivity();
+
             Guard.AgainstNull(evt, nameof(evt));
 
             this._logger.LogInformation("[KITCHEN] Logging order submitted event");

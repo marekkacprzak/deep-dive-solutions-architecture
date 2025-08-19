@@ -12,6 +12,12 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.8" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
     <PackageReference Include="MongoDB.Driver" Version="3.4.2" />
+    <PackageReference Include="Paramore.Brighter" Version="9.9.10" />
+    <PackageReference Include="Paramore.Brighter.Extensions.DependencyInjection" Version="9.9.10" />
+    <PackageReference Include="Paramore.Brighter.MessagingGateway.Kafka" Version="9.9.10" />
+    <PackageReference Include="Paramore.Brighter.ServiceActivator" Version="9.9.10" />
+    <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.DependencyInjection" Version="9.9.10" />
+    <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.Hosting" Version="9.9.10" />
     <PackageReference Include="Serilog" Version="4.3.0" />
     <PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
     <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />

@@ -1,11 +1,13 @@
 using System.Text.Json.Serialization;
+using Paramore.Brighter;
+using PlantBasedPizza.Events;
 using PlantBasedPizza.Shared.Events;
 using PlantBasedPizza.Shared.Logging;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace PlantBasedPizza.Events
 {
-    public class OrderCompletedEvent : IntegrationEvent, IDomainEvent
+    public class OrderCompletedEvent : DomainEvent
     {
         private readonly string _eventId;
 
@@ -30,15 +32,29 @@ namespace PlantBasedPizza.Events
         
         public override string EventName => "orders.order-completed";
         public override string EventVersion => "v1";
-        public override Uri Source => new Uri("https://monolith.plantbasedpizza");
         public override string AsString()
         {
             return JsonSerializer.Serialize(this);
         }
 
-        public string EventId => this._eventId;
+        public override string EventId => this._eventId;
 
-        public DateTime EventDate { get; }
-        public string CorrelationId { get; set; }
+        public override DateTime EventDate { get; }
+        public override string CorrelationId { get; set; }
+    }
+}
+
+public class OrderCompletedMessageMapper: IAmAMessageMapper<OrderCompletedEvent> {
+    public Message MapToMessage(OrderCompletedEvent request)
+    {
+        var header = new MessageHeader(messageId: request.Id, topic: request.EventName, messageType: MessageType.MT_EVENT);
+        var body = new MessageBody(request.AsString());
+        var message = new Message(header, body);
+        return message;
+    }
+
+    public OrderCompletedEvent MapToRequest(Message message)
+    {
+        return JsonSerializer.Deserialize<OrderCompletedEvent>(message.Body.Value);
     }
 }

@@ -1,27 +1,29 @@
+using System.Text.Json;
 using PlantBasedPizza.OrderManager.Core.Services;
-using PlantBasedPizza.Recipes.DataTransfer;
-using Recipe = PlantBasedPizza.OrderManager.Core.Services.Recipe;
 
 namespace PlantBasedPizza.OrderManager.Infrastructure
 {
-    public class RecipeService : IRecipeService
+    public class HttpRecipeService : IRecipeService
     {
-        private readonly RecipeDataTransferService _recipes;
+        private readonly HttpClient _httpClient;
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-        public RecipeService(RecipeDataTransferService recipes)
+        public HttpRecipeService(HttpClient httpClient)
         {
-            _recipes = recipes;
+            _httpClient = httpClient;
+            _jsonSerializerOptions = new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+            };
         }
 
         public async Task<Recipe> GetRecipe(string recipeIdentifier)
         {
-            var recipe = await this._recipes.GetRecipeAsync(recipeIdentifier);
+            var recipe = await this._httpClient.GetAsync($"/recipes/{recipeIdentifier}");
 
-            return new Recipe()
-            {
-                Price = recipe.Price,
-                ItemName = recipe.Name,
-            };
+            return JsonSerializer.Deserialize<Recipe>(await recipe.Content.ReadAsStringAsync(), _jsonSerializerOptions);
         }
     }
 }

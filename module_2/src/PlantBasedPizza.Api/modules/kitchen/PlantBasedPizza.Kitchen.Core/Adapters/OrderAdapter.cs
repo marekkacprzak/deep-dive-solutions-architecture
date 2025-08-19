@@ -1,12 +1,10 @@
+using System.Text.Json.Serialization;
+
 namespace PlantBasedPizza.Kitchen.Core.Adapters
 {
-    public class OrderAdapter
+    public record OrderAdapter
     {
-        public OrderAdapter()
-        {
-            this.Items = new List<OrderItemAdapter>();
-        }
-        
-        public List<OrderItemAdapter> Items { get; }
+        [JsonPropertyName("items")]
+        public List<OrderItemAdapter> Items { get; init; }
     }
 }

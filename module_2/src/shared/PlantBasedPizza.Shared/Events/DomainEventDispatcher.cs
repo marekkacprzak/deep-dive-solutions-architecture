@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Paramore.Brighter;
 using PlantBasedPizza.Shared.Logging;
 
 namespace PlantBasedPizza.Shared.Events;
@@ -22,7 +23,7 @@ public class DomainEventDispatcher : IDomainEventDispatcher
     }
 
     public async Task PublishAsync<T>(T domainEvent, CancellationToken cancellationToken = default) 
-        where T : IDomainEvent
+        where T : IDomainEvent, IRequest
     {
         ArgumentNullException.ThrowIfNull(domainEvent);
 

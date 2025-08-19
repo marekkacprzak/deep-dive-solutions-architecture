@@ -20,9 +20,32 @@ namespace PlantBasedPizza.Kitchen.Infrastructure
                     overrideConnectionString ?? configuration.GetConnectionString("KitchenPostgresConnection"),
                     b => b.MigrationsAssembly("PlantBasedPizza.Kitchen.Infrastructure")));
 
-            services.AddTransient<IRecipeService, RecipeService>();
-            services.AddTransient<IOrderManagerService, OrderManagerService>();
+            if (configuration.GetValue<bool>("UseDistributedServices")){
+                services.AddServiceDiscovery();
+                var recipeServiceEndpoint = configuration["Services:RecipeApi"];
+                ArgumentNullException.ThrowIfNullOrEmpty(recipeServiceEndpoint);
+                var orderServiceEndpoint = configuration["Services:OrderApi"];
+                ArgumentNullException.ThrowIfNullOrEmpty(orderServiceEndpoint);
+
+                services.AddHttpClient<IRecipeService, HttpRecipeService>(client =>
+                {
+                    client.BaseAddress = new Uri(recipeServiceEndpoint, UriKind.Absolute);
+                })
+                .AddServiceDiscovery();
+                services.AddHttpClient<IOrderManagerService, HttpOrderService>(client =>
+                {
+                    client.BaseAddress = new Uri(orderServiceEndpoint, UriKind.Absolute);
+                })
+                .AddServiceDiscovery();
+            }
+            else
+            {
+                services.AddTransient<IRecipeService, RecipeService>();
+                services.AddTransient<IOrderManagerService, OrderManagerService>();
+            }
+
             services.AddTransient<Handles<OrderSubmittedEvent>, OrderSubmittedEventHandler>();
+            services.AddScoped<OrderSubmittedEventHandler>();
             services.AddScoped<IKitchenRequestRepository, KitchenRequestRepositoryPostgres>();
 
             return services;

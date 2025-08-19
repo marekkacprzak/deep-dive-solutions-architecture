@@ -18,7 +18,7 @@ public class CreatePickupOrderCommandHandler
     {
         var order = await _orderFactory.CreateAsync(request.OrderType, request.CustomerIdentifier, null, CorrelationContext.GetCorrelationId());
 
-        await this._orderRepository.Add(order);
+        await _orderRepository.Add(order);
 
         return new OrderDto(order);
     }

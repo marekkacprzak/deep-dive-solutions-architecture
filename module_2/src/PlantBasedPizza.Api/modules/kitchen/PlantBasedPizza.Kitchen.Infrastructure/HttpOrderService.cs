@@ -5,20 +5,29 @@ using PlantBasedPizza.Recipes.Core.Entities;
 
 namespace PlantBasedPizza.Kitchen.Infrastructure
 {
-    public class HttpRecipeService : IRecipeService
+    public class HttpOrderService : IOrderManagerService
     {
         private readonly HttpClient _httpClient;
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-        public HttpRecipeService(IHttpClientFactory httpClientFactory)
+        public HttpOrderService(HttpClient httpClient)
         {
-            _httpClient = httpClientFactory.CreateClient();
+            _httpClient = httpClient;
+            _jsonSerializerOptions = new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true,
+            };
         }
 
-        public async Task<RecipeAdapter> GetRecipe(string recipeIdentifier)
+        public async Task<OrderAdapter> GetOrderDetails(string orderIdentifier)
         {
-            var recipe = await this._httpClient.GetAsync($"/recipes/{recipeIdentifier}");
+            var httpResponse = await this._httpClient.GetAsync($"order/{orderIdentifier}/detail");
 
-            return JsonSerializer.Deserialize<RecipeAdapter>(await recipe.Content.ReadAsStringAsync());
+            var responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            var orderAdapter = JsonSerializer.Deserialize<OrderAdapter>(responseBody);
+
+            return orderAdapter;
         }
     }
 }

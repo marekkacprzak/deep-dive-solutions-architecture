@@ -8,5 +8,7 @@ namespace PlantBasedPizza.OrderManager.Core;
 
 public interface OrderEventPublisher
 {
+    Task Publish(OrderCreatedEvent evt);
+    Task Publish(OrderSubmittedEvent evt);
     Task Publish(OrderCompletedEvent evt);
 }

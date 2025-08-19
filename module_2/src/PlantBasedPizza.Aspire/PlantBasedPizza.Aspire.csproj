@@ -13,13 +13,31 @@
 
     <ItemGroup>
         <PackageReference Include="Aspire.Hosting.AppHost" Version="9.4.1" />
+        <PackageReference Include="Aspire.Hosting.Kafka" Version="9.4.1" />
         <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.4.1" />
-        <PackageReference Include="Aspire.Hosting.Yarp" Version="9.4.1-preview.1.25408.4" />
+        <PackageReference Include="Aspire.Hosting.Yarp" Version="9.3.1-preview.1.25305.6" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\PlantBasedPizza.Api\application\PlantBasedPizza.Api\PlantBasedPizza.Api.csproj" />
+      <ProjectReference Include="..\PlantBasedPizza.Api\application\PlantBasedPizza.Delivery.Api\PlantBasedPizza.Delivery.Api.csproj" />
+      <ProjectReference Include="..\PlantBasedPizza.Api\application\PlantBasedPizza.Kitchen.Api\PlantBasedPizza.Kitchen.Api.csproj" />
+      <ProjectReference Include="..\PlantBasedPizza.Api\application\PlantBasedPizza.Order.Api\PlantBasedPizza.Order.Api.csproj" />
+      <ProjectReference Include="..\PlantBasedPizza.Api\application\PlantBasedPizza.Recipes.Api\PlantBasedPizza.Recipes.Api.csproj" />
+      <ProjectReference Include="..\PlantBasedPizza.Api\modules\order-manager\PlantBasedPizza.Worker\PlantBasedPizza.Worker.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="yarp.horizontal.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="yarp.migration.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="yarp.single.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

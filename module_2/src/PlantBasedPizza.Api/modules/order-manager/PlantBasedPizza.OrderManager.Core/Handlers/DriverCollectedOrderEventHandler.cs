@@ -18,11 +18,11 @@ namespace PlantBasedPizza.OrderManager.Core.Handlers
         [SubscribeOperation(typeof(DriverCollectedOrderEvent), Summary = "Handle a driver order collected event.", OperationId = "delivery.driver-collected")]
         public async Task Handle(DriverCollectedOrderEvent evt)
         {
-            var order = await this._orderRepository.Retrieve(evt.OrderIdentifier);
+            var order = await _orderRepository.Retrieve(evt.OrderIdentifier);
 
             order.AddHistory($"Order collected by driver {evt.DriverName}");
             
-            await this._orderRepository.Update(order).ConfigureAwait(false);
+            await _orderRepository.Update(order).ConfigureAwait(false);
         }
     }
 }

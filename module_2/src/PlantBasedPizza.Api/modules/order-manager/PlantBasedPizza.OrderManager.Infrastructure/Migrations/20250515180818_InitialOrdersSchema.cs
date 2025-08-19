@@ -56,10 +56,6 @@ namespace PlantBasedPizza.OrderManager.Infrastructure.Migrations
                     Failed = table.Column<bool>(type: "boolean", nullable: false),
                     FailureReason = table.Column<string>(type: "text", nullable: true),
                     TraceId = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_orders_outboxitems", x => x.ItemId);
                 });
 
             migrationBuilder.CreateTable(

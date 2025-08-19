@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 using PlantBasedPizza.Events;
+using PlantBasedPizza.Shared.Events;
 using PlantBasedPizza.Shared.Guards;
 
 namespace PlantBasedPizza.OrderManager.Core;
@@ -12,7 +13,7 @@ public class Order
 
     [JsonIgnore]
     [NotMapped]
-    private List<IntegrationEvent> _events = new();
+    private List<DomainEvent> _events = new();
 
     [JsonPropertyName("items")] private List<OrderItem> _items = new();
 
@@ -27,7 +28,7 @@ public class Order
         CustomerIdentifier = "";
         OrderNumber = orderNumber;
         // Collections already initialized above
-        _events = new List<IntegrationEvent>();
+        _events = new List<DomainEvent>();
     }
 
     // Internal constructor for factory
@@ -45,9 +46,11 @@ public class Order
         OrderDate = DateTime.UtcNow;
         OrderNumber = Guid.NewGuid().ToString();
         DeliveryDetails = deliveryDetails;
-        _events = new List<IntegrationEvent>();
+        _events = new List<DomainEvent>();
         
         AddHistory("Order created.");
+
+        AddIntegrationEvent(new OrderCreatedEvent(orderIdentifier));
     }
 
     // Static Create method removed - use IOrderFactory instead
@@ -68,7 +71,7 @@ public class Order
 
     [JsonIgnore]
     [NotMapped]
-    public IReadOnlyCollection<IntegrationEvent> Events => (_events ??  new());
+    public IReadOnlyCollection<DomainEvent> Events => (_events ??  new());
 
     [JsonIgnore]
     public IReadOnlyCollection<OrderHistory> History => _history.OrderBy(p => p.HistoryDate).ToList();
@@ -151,6 +154,21 @@ public class Order
     public void MarkAsSubmitted()
     {
         OrderSubmittedOn = DateTime.UtcNow;
+
+        AddIntegrationEvent(new OrderSubmittedEvent(OrderIdentifier)
+        {
+            CorrelationId = string.Empty
+        });
+    }
+
+    public void ReadyForDelivery()
+    {
+        AddHistory("Sending for delivery");
+
+        AddIntegrationEvent(new OrderReadyForDeliveryEvent(OrderIdentifier,
+            DeliveryDetails.AddressLine1, DeliveryDetails.AddressLine2,
+            DeliveryDetails.AddressLine3, DeliveryDetails.AddressLine4,
+            DeliveryDetails.AddressLine5, DeliveryDetails.Postcode));
     }
 
     public void MarkAsAwaitingCollection()
@@ -163,11 +181,13 @@ public class Order
     {
         OrderCompletedOn = DateTime.UtcNow;
         AwaitingCollection = false;
+
+        AddIntegrationEvent(new OrderCompletedEvent(CustomerIdentifier, OrderIdentifier, TotalPrice));
     }
 
-    public void AddIntegrationEvent(IntegrationEvent evt)
+    public void AddIntegrationEvent(DomainEvent evt)
     {
-        if (_events is null) _events = new List<IntegrationEvent>();
+        if (_events is null) _events = new List<DomainEvent>();
         _events.Add(evt);
     }
 

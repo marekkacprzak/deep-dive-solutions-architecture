@@ -73,6 +73,19 @@ var app = builder.Build();
 
 app.UseCors("AllowAll");
 
+var serviceScopeFactory = app.Services.GetService<IServiceScopeFactory>();
+using (var scope = serviceScopeFactory.CreateScope())
+{
+    var ordersDbContext = scope.ServiceProvider.GetRequiredService<OrderManagerDbContext>();
+    var recipesDbContext = scope.ServiceProvider.GetRequiredService<RecipesDbContext>();
+    var deliveryDbContext = scope.ServiceProvider.GetRequiredService<DeliveryDbContext>();
+    var kitchenDbContext = scope.ServiceProvider.GetRequiredService<KitchenDbContext>();
+    await ordersDbContext.Database.MigrateAsync();
+    await recipesDbContext.Database.MigrateAsync();
+    await deliveryDbContext.Database.MigrateAsync();
+    await kitchenDbContext.Database.MigrateAsync();
+}
+
 app.Map("/health", async () =>
 {
     logger.Information("Health check requested");
@@ -100,22 +113,6 @@ app.Map("/health", async () =>
         deliveryState = deliveryConnectionState,
         kitchenState = kitchenConnectionState
     });
-});
-
-app.MapGet("/utils/__migrate", async (
-    OrderManagerDbContext ordersDbContext,
-    RecipesDbContext recipesDbContext,
-    DeliveryDbContext deliveryDbContext,
-    KitchenDbContext kitchenDbContext) =>
-{
-    logger.Information("DB migration requested");
-    
-    await ordersDbContext.Database.MigrateAsync();
-    await recipesDbContext.Database.MigrateAsync();
-    await deliveryDbContext.Database.MigrateAsync();
-    await kitchenDbContext.Database.MigrateAsync();
-    
-    return Results.Ok("OK");
 });
 
 app.Use(async (context, next) =>
@@ -147,4 +144,4 @@ app.Use(async (context, next) =>
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

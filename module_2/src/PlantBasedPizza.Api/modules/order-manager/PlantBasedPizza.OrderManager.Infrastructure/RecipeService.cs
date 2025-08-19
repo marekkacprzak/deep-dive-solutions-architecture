@@ -20,7 +20,7 @@ namespace PlantBasedPizza.OrderManager.Infrastructure
             return new Recipe()
             {
                 Price = recipe.Price,
-                ItemName = recipe.Name,
+                Name = recipe.Name,
             };
         }
     }

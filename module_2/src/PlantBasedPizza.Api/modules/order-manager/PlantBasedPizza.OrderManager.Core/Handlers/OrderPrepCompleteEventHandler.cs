@@ -21,19 +21,19 @@ namespace PlantBasedPizza.OrderManager.Core.Handlers
         [SubscribeOperation(typeof(OrderPrepCompleteEvent), Summary = "Handle an order prep completed event.", OperationId = "kitchen.prep-complete")]
         public async Task Handle(OrderPrepCompleteEvent evt)
         {
-            this._logger.LogInformation("[ORDER-MANAGER] Handling order prep complete event");
+            _logger.LogInformation("[ORDER-MANAGER] Handling order prep complete event");
             
-            var order = await this._orderRepository.Retrieve(evt.OrderIdentifier);
+            var order = await _orderRepository.Retrieve(evt.OrderIdentifier);
             
-            this._logger.LogInformation("[ORDER-MANAGER] Found order");
+            _logger.LogInformation("[ORDER-MANAGER] Found order");
 
             order.AddHistory("Order prep completed");
             
-            this._logger.LogInformation("[ORDER-MANAGER] Added history");
+            _logger.LogInformation("[ORDER-MANAGER] Added history");
 
-            await this._orderRepository.Update(order);
+            await _orderRepository.Update(order);
             
-            this._logger.LogInformation("[ORDER-MANAGER] Wrote updates to database");
+            _logger.LogInformation("[ORDER-MANAGER] Wrote updates to database");
         }
     }
 }

@@ -2,6 +2,8 @@ using System.Text.Json;
 using Paramore.Brighter;
 using PlantBasedPizza.Events;
 
+namespace PlantBasedPizza.OrderManager.Infrastructure;
+
 public class OrderSubmittedMessageMapper : IAmAMessageMapper<OrderSubmittedEvent>
 {
     public Message MapToMessage(OrderSubmittedEvent request)

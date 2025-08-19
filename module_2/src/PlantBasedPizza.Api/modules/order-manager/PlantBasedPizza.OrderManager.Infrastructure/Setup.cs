@@ -42,13 +42,31 @@ public static class Setup
         services.AddTransient<MarkAwaitingCollectionCommandHandler>();
         services.AddTransient<CreateDeliveryOrderCommandHandler>();
         services.AddTransient<CreatePickupOrderCommandHandler>();
-        services.AddTransient<IRecipeService, RecipeService>();
+
+        if (configuration.GetValue<bool>("UseDistributedServices")){
+            var recipeServiceEndpoint = configuration["Services:RecipeApi"];
+            ArgumentNullException.ThrowIfNullOrEmpty(recipeServiceEndpoint);
+
+            services.AddServiceDiscovery();
+
+            services.AddHttpClient<IRecipeService, HttpRecipeService>(client =>
+            {
+                client.BaseAddress = new Uri(recipeServiceEndpoint, UriKind.Absolute);
+            })
+            .AddServiceDiscovery();
+            services.AddSingleton<OrderEventPublisher, DistributedEventPublisher>();
+        }
+        else
+        {
+            services.AddTransient<IRecipeService, RecipeService>();
+            services.AddSingleton<OrderEventPublisher, NoOpEventPublisher>();
+        }
+
         services.AddTransient<IPaymentService, PaymentService>();
-        services.AddTransient<OrderEventPublisher, DaprEventPublisher>();
-        
+
         // Domain services and factories
         services.AddTransient<IOrderFactory, OrderFactory>();
-        
+
         // Register validators
         services.AddScoped<IValidator<CreatePickupOrderCommand>, CreatePickupOrderCommandValidator>();
         services.AddScoped<IValidator<CreateDeliveryOrderCommand>, CreateDeliveryOrderCommandValidator>();
@@ -60,8 +78,6 @@ public static class Setup
         services.AddTransient<Handles<OrderQualityCheckedEvent>, OrderQualityCheckedEventHandler>();
         services.AddTransient<Handles<OrderDeliveredEvent>, DriverDeliveredOrderEventHandler>();
         services.AddTransient<Handles<DriverCollectedOrderEvent>, DriverCollectedOrderEventHandler>();
-
-        services.AddDaprClient();
 
         return services;
     }

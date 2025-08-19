@@ -23,7 +23,7 @@ public class OrderManagerTests
         // Arrange
         var mockEventDispatcher = A.Fake<IDomainEventDispatcher>();
         var mockLogger = A.Fake<ILogger<OrderFactory>>();
-        var orderFactory = new OrderFactory(mockEventDispatcher, mockLogger);
+        var orderFactory = new OrderFactory(mockLogger);
         
         // Act
         var order = await orderFactory.CreateAsync(OrderType.Pickup, DefaultCustomerIdentifier);
@@ -34,18 +34,14 @@ public class OrderManagerTests
         order.OrderNumber.Should().NotBeNullOrEmpty();
         order.OrderDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
         order.OrderType.Should().Be(OrderType.Pickup);
-
-        A.CallTo(() => mockEventDispatcher.PublishAsync(A<OrderCreatedEvent>._, A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
     }
     
     [Fact]
     public async Task CanCreateOrderAndAddHistory_ShouldAddHistoryItem()
     {
         // Arrange
-        var mockEventDispatcher = A.Fake<IDomainEventDispatcher>();
         var mockLogger = A.Fake<ILogger<OrderFactory>>();
-        var orderFactory = new OrderFactory(mockEventDispatcher, mockLogger);
+        var orderFactory = new OrderFactory(mockLogger);
         
         // Act
         var order = await orderFactory.CreateAsync(OrderType.Pickup, DefaultCustomerIdentifier);
@@ -59,9 +55,8 @@ public class OrderManagerTests
     public async Task CanSetIsAwaitingCollection_ShouldMarkAwaitingAndAddHistory()
     {
         // Arrange
-        var mockEventDispatcher = A.Fake<IDomainEventDispatcher>();
         var mockLogger = A.Fake<ILogger<OrderFactory>>();
-        var orderFactory = new OrderFactory(mockEventDispatcher, mockLogger);
+        var orderFactory = new OrderFactory(mockLogger);
         
         // Act
         var order = await orderFactory.CreateAsync(OrderType.Pickup, DefaultCustomerIdentifier);
@@ -76,9 +71,8 @@ public class OrderManagerTests
     public async Task CanCreateNewOrderAndAddItems_ShouldAddToItemArray()
     {
         // Arrange
-        var mockEventDispatcher = A.Fake<IDomainEventDispatcher>();
         var mockLogger = A.Fake<ILogger<OrderFactory>>();
-        var orderFactory = new OrderFactory(mockEventDispatcher, mockLogger);
+        var orderFactory = new OrderFactory(mockLogger);
         
         // Act
         var order = await orderFactory.CreateAsync(OrderType.Pickup, DefaultCustomerIdentifier);
@@ -98,9 +92,8 @@ public class OrderManagerTests
     public async Task CanCreateNewOrderAndRemoveItems_ShouldRemove()
     {
         // Arrange
-        var mockEventDispatcher = A.Fake<IDomainEventDispatcher>();
         var mockLogger = A.Fake<ILogger<OrderFactory>>();
-        var orderFactory = new OrderFactory(mockEventDispatcher, mockLogger);
+        var orderFactory = new OrderFactory(mockLogger);
         
         // Act
         var order = await orderFactory.CreateAsync(OrderType.Pickup, DefaultCustomerIdentifier);
@@ -124,9 +117,8 @@ public class OrderManagerTests
     public async Task CanCreateNewDeliveryOrder_ShouldGetDeliveryDetails()
     {
         // Arrange
-        var mockEventDispatcher = A.Fake<IDomainEventDispatcher>();
         var mockLogger = A.Fake<ILogger<OrderFactory>>();
-        var orderFactory = new OrderFactory(mockEventDispatcher, mockLogger);
+        var orderFactory = new OrderFactory(mockLogger);
         var deliveryDetails = new DeliveryDetails()
         {
             AddressLine1 = "TEST",
@@ -149,9 +141,8 @@ public class OrderManagerTests
     public async Task CanCreateNewDeliveryOrder_ShouldAddDeliveryCharge()
     {
         // Arrange
-        var mockEventDispatcher = A.Fake<IDomainEventDispatcher>();
         var mockLogger = A.Fake<ILogger<OrderFactory>>();
-        var orderFactory = new OrderFactory(mockEventDispatcher, mockLogger);
+        var orderFactory = new OrderFactory(mockLogger);
         var deliveryDetails = new DeliveryDetails()
         {
             AddressLine1 = "TEST",
@@ -172,7 +163,7 @@ public class OrderManagerTests
         // Arrange
         var mockEventDispatcher = A.Fake<IDomainEventDispatcher>();
         var mockLogger = A.Fake<ILogger<OrderFactory>>();
-        var orderFactory = new OrderFactory(mockEventDispatcher, mockLogger);
+        var orderFactory = new OrderFactory(mockLogger);
         var deliveryDetails = new DeliveryDetails()
         {
             AddressLine1 = "TEST",
@@ -196,8 +187,6 @@ public class OrderManagerTests
 
         // Assert
         order.OrderSubmittedOn.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
-        A.CallTo(() => mockEventDispatcher.PublishAsync(A<OrderSubmittedEvent>._, A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
     }
     
     [Fact]
@@ -206,7 +195,7 @@ public class OrderManagerTests
         // Arrange
         var mockEventDispatcher = A.Fake<IDomainEventDispatcher>();
         var mockLogger = A.Fake<ILogger<OrderFactory>>();
-        var orderFactory = new OrderFactory(mockEventDispatcher, mockLogger);
+        var orderFactory = new OrderFactory(mockLogger);
         var deliveryDetails = new DeliveryDetails()
         {
             AddressLine1 = "TEST",
@@ -236,7 +225,7 @@ public class OrderManagerTests
         // Arrange
         var mockEventDispatcher = A.Fake<IDomainEventDispatcher>();
         var mockLogger = A.Fake<ILogger<OrderFactory>>();
-        var orderFactory = new OrderFactory(mockEventDispatcher, mockLogger);
+        var orderFactory = new OrderFactory(mockLogger);
         var deliveryDetails = new DeliveryDetails()
         {
             AddressLine1 = "TEST",
@@ -261,8 +250,6 @@ public class OrderManagerTests
         // Assert
         order.OrderCompletedOn.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
         order.AwaitingCollection.Should().BeFalse();
-        A.CallTo(() => mockEventDispatcher.PublishAsync(A<OrderCompletedEvent>._, A<CancellationToken>._))
-            .MustHaveHappenedOnceExactly();
     }
     
     
@@ -274,7 +261,7 @@ public class OrderManagerTests
             // Arrange
             var mockEventDispatcher = A.Fake<IDomainEventDispatcher>();
             var mockLogger = A.Fake<ILogger<OrderFactory>>();
-            var orderFactory = new OrderFactory(mockEventDispatcher, mockLogger);
+            var orderFactory = new OrderFactory(mockLogger);
             
             var order = await orderFactory.CreateAsync(OrderType.Pickup, DefaultCustomerIdentifier);
             
@@ -299,9 +286,8 @@ public class OrderManagerTests
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
         {
             // Arrange
-            var mockEventDispatcher = A.Fake<IDomainEventDispatcher>();
             var mockLogger = A.Fake<ILogger<OrderFactory>>();
-            var orderFactory = new OrderFactory(mockEventDispatcher, mockLogger);
+            var orderFactory = new OrderFactory(mockLogger);
             
             // Act
             await orderFactory.CreateAsync(OrderType.Pickup, string.Empty);
@@ -315,9 +301,8 @@ public class OrderManagerTests
         await Assert.ThrowsAsync<ArgumentException>(async () =>
         {
             // Arrange
-            var mockEventDispatcher = A.Fake<IDomainEventDispatcher>();
             var mockLogger = A.Fake<ILogger<OrderFactory>>();
-            var orderFactory = new OrderFactory(mockEventDispatcher, mockLogger);
+            var orderFactory = new OrderFactory(mockLogger);
             
             // Act
             await orderFactory.CreateAsync(OrderType.Delivery, DefaultCustomerIdentifier);

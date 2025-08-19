@@ -1,9 +1,10 @@
+using System.Text.Json;
 using PlantBasedPizza.Shared.Events;
 using PlantBasedPizza.Shared.Logging;
 
 namespace PlantBasedPizza.Events
 {
-    public class OrderReadyForDeliveryEvent : IDomainEvent
+    public class OrderReadyForDeliveryEvent : DomainEvent
     {
         public OrderReadyForDeliveryEvent(string orderIdentifier, string addressLine1, string addressLine2, string addressLine3, string addressLine4, string addressLine5, string postcode)
         {
@@ -19,13 +20,13 @@ namespace PlantBasedPizza.Events
             this.CorrelationId = CorrelationContext.GetCorrelationId();
         }
         
-        public string EventName => "order-manager.ready-for-delivery";
-        public string EventVersion => "v1";
+        public override string EventName => "order-manager.ready-for-delivery";
+        public override string EventVersion => "v1";
 
-        public string EventId { get; }
+        public override string EventId { get; }
         
-        public DateTime EventDate { get; }
-        public string CorrelationId { get; set; }
+        public override DateTime EventDate { get; }
+        public override string CorrelationId { get; set; }
 
         public string OrderIdentifier { get; private set; }
         
@@ -40,5 +41,10 @@ namespace PlantBasedPizza.Events
         public string DeliveryAddressLine5 { get; private set; }
         
         public string Postcode { get; private set; }
+
+        public override string AsString()
+        {
+            return JsonSerializer.Serialize(this);
+        }
     }
 }

@@ -8,26 +8,65 @@
   "AllowedHosts": "*",
   "ReverseProxy": {
     "Routes": {
-      "api": {
-        "ClusterId": "api",
+      "orders": {
+        "ClusterId": "orders",
         "Match": {
-          "Path": "/{**catch-all}"
+          "Path": "/order/{**catch-all}"
+        },
+        "Transforms": [
+        ]
+      },
+      "recipes": {
+        "ClusterId": "recipes",
+        "Match": {
+          "Path": "/recipes/{**catch-all}"
+        },
+        "Transforms": [
+        ]
+      },
+      "kitchen": {
+        "ClusterId": "kitchen",
+        "Match": {
+          "Path": "/kitchen/{**catch-all}"
+        },
+        "Transforms": [
+        ]
+      },
+      "delivery": {
+        "ClusterId": "delivery",
+        "Match": {
+          "Path": "/delivery/{**catch-all}"
         },
         "Transforms": [
         ]
       }
     },
     "Clusters": {
-      "api": {
+      "orders": {
         "Destinations": {
           "instance-one": {
-            "Address": "http://instance-one"
-          },
-          "instance-two": {
-            "Address": "http://instance-two"
-          },
-          "instance-three": {
-            "Address": "http://instance-three"
+            "Address": "http://order-manager-api"
+          }
+        }
+      },
+      "kitchen": {
+        "Destinations": {
+          "instance-one": {
+            "Address": "http://kitchen-api"
+          }
+        }
+      },
+      "recipes": {
+        "Destinations": {
+          "instance-one": {
+            "Address": "http://recipe-api"
+          }
+        }
+      },
+      "delivery": {
+        "Destinations": {
+          "instance-one": {
+            "Address": "http://delivery-api"
           }
         }
       }

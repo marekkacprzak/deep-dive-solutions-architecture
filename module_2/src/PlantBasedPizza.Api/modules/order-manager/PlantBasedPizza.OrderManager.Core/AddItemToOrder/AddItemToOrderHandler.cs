@@ -17,13 +17,13 @@ public class AddItemToOrderHandler
     {
         try
         {
-            var recipe = await this._recipeService.GetRecipe(command.RecipeIdentifier);
+            var recipe = await _recipeService.GetRecipe(command.RecipeIdentifier);
             
-            var order = await this._orderRepository.Retrieve(command.OrderIdentifier);
+            var order = await _orderRepository.Retrieve(command.OrderIdentifier);
 
-            order.AddOrderItem(command.RecipeIdentifier, recipe.ItemName, command.Quantity, recipe.Price);
+            order.AddOrderItem(command.RecipeIdentifier, recipe.Name, command.Quantity, recipe.Price);
 
-            await this._orderRepository.Update(order);
+            await _orderRepository.Update(order);
 
             return new  OrderDto(order);
         }

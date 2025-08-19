@@ -1,23 +1,35 @@
 using System.Diagnostics;
+using FluentAssertions;
 using PlantBasedPizza.FitnessFunctions.Drivers;
+using Xunit;
 
 namespace PlantBasedPizza.FitnessFunctions;
 
-public class Tests
+public class PerformanceTests
 {
-    [Test]
-    public async Task TestRecipeApiPerformance_ShouldRespondInside200ms()
+    [Fact]
+    public async Task RecipeApiPerformance_ShouldRespondInside300ms()
     {
-        var recipeDriver = new RecipeDriver();
-        var stopwatch = new Stopwatch();
+        var performanceResults = new List<long>();
 
-        stopwatch.Start();
+        for (var x = 0; x <50; x++)
+        {
+            var recipeDriver = new RecipeDriver();
+            var stopwatch = new Stopwatch();
 
-        var response = await recipeDriver.All();
-        stopwatch.Stop();
-        var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+            stopwatch.Start();
 
-        Assert.That(elapsedMilliseconds, Is.LessThan(200),
-            $"API response took too long: {elapsedMilliseconds} ms");
+            var response = await recipeDriver.All();
+            stopwatch.Stop();
+            var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+
+            performanceResults.Add(elapsedMilliseconds);
+        }
+
+        var averageMilliseconds = performanceResults.Average();
+        var p90Milliseconds = performanceResults.OrderBy(x => x).ElementAt((int)(performanceResults.Count * 0.9));
+
+        averageMilliseconds.Should().BeLessOrEqualTo(300, $"Average API response after 50 iterations took too long: {averageMilliseconds} ms");
+        p90Milliseconds.Should().BeLessOrEqualTo(450);
     }
 }

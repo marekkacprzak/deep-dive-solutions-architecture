@@ -1,9 +1,9 @@
-using System.Reflection;
 using FluentAssertions;
 using NetArchTest.Rules;
 using Xunit;
+using Assembly = System.Reflection.Assembly;
 
-namespace PlantBasedPizza.UnitTest;
+namespace PlantBasedPizza.FitnessFunctions;
 
 public class ArchitectureTests
 {
@@ -16,19 +16,22 @@ public class ArchitectureTests
     [InlineData("PlantBasedPizza.Recipes.Infrastructure", new[] { "PlantBasedPizza.OrderManager.Core", "PlantBasedPizza.Kitchen.Core", "PlantBasedPizza.Deliver.Core", "PlantBasedPizza.OrderManager.Infrastructure", "PlantBasedPizza.Payment.Core", "PlantBasedPizza.Payment.Infrastructure", "PlantBasedPizza.Kitchen.Infrastructure", "PlantBasedPizza.Deliver.Infrastructure" })]
     [InlineData("PlantBasedPizza.Kitchen.Infrastructure", new[] { "PlantBasedPizza.Recipes.Core", "PlantBasedPizza.OrderManager.Core", "PlantBasedPizza.Deliver.Core", "PlantBasedPizza.Recipes.Infrastructure", "PlantBasedPizza.Payment.Core", "PlantBasedPizza.Payment.Infrastructure", "PlantBasedPizza.OrderManager.Infrastructure", "PlantBasedPizza.Deliver.Infrastructure" })]
     [InlineData("PlantBasedPizza.Deliver.Infrastructure", new[] { "PlantBasedPizza.Recipes.Core", "PlantBasedPizza.Kitchen.Core", "PlantBasedPizza.OrderManager.Core", "PlantBasedPizza.Recipes.Infrastructure", "PlantBasedPizza.Payment.Core", "PlantBasedPizza.Payment.Infrastructure", "PlantBasedPizza.Kitchen.Infrastructure", "PlantBasedPizza.OrderManager.Infrastructure" })]
-    public void ModuleToModuleDepenedencies_ShouldOnlyBeViaDataTransferLibraries(string assemblyUnderTest, string[] compareAgainst)
+    public void ModuleToModuleDependencies_ShouldOnlyBeViaDataTransferLibraries(string assemblyUnderTest, string[] compareAgainst)
     {
         foreach (var assembly in compareAgainst)
         {
             var result = Types.InAssembly(Assembly.Load(assemblyUnderTest))
                 .That()
                 .ResideInNamespace(assemblyUnderTest)
+                .ShouldNot()
+                .HaveDependencyOn(assembly)
+                .GetResult();
+
+            var failingTypes = String.Join(',', (result.FailingTypes ?? []).Select(type => type.FullName).ToArray());
+
+            result.IsSuccessful
                 .Should()
-                .NotHaveDependencyOn(assembly)
-                .GetResult()
-                .IsSuccessful
-                .Should()
-                .BeTrue($"{assemblyUnderTest} should not have a dependency on {assembly}");
+                .BeTrue($"{assemblyUnderTest} should not have a dependency on {assembly}. Failing types: {failingTypes}");
         }
     }
 

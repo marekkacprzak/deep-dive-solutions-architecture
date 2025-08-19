@@ -10,15 +10,35 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="coverlet.collector" Version="6.0.0"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
-        <PackageReference Include="NUnit" Version="3.14.0"/>
-        <PackageReference Include="NUnit.Analyzers" Version="3.9.0"/>
-        <PackageReference Include="NUnit3TestAdapter" Version="4.5.0"/>
+        <PackageReference Include="FluentAssertions" Version="7.0.0" />
+        <PackageReference Include="FluentValidation" Version="11.10.0" />
+        <PackageReference Include="FakeItEasy" Version="7.3.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+        <PackageReference Include="NetArchTest.Rules" Version="1.3.2" />
+        <PackageReference Include="xunit" Version="2.9.3" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.3">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector" Version="6.0.4">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="NUnit.Framework"/>
+        <ProjectReference Include="..\..\application\PlantBasedPizza.Api\PlantBasedPizza.Api.csproj" />
+        <ProjectReference Include="..\..\modules\deliver\PlantBasedPizza.Deliver.Core\PlantBasedPizza.Deliver.Core.csproj" />
+        <ProjectReference Include="..\..\modules\deliver\PlantBasedPizza.Deliver.Infrastructure\PlantBasedPizza.Deliver.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\modules\kitchen\PlantBasedPizza.Kitchen.Core\PlantBasedPizza.Kitchen.Core.csproj" />
+        <ProjectReference Include="..\..\modules\kitchen\PlantBasedPizza.Kitchen.Infrastructure\PlantBasedPizza.Kitchen.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\modules\order-manager\PlantBasedPizza.OrderManager.Core\PlantBasedPizza.OrderManager.Core.csproj" />
+        <ProjectReference Include="..\..\modules\order-manager\PlantBasedPizza.OrderManager.Infrastructure\PlantBasedPizza.OrderManager.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\modules\order-manager\PlantBasedPizza.OrderManager.DataTransfer\PlantBasedPizza.OrderManager.DataTransfer.csproj" />
+        <ProjectReference Include="..\..\modules\recipes\PlantBasedPizza.Recipes.Core\PlantBasedPizza.Recipes.Core.csproj" />
+        <ProjectReference Include="..\..\modules\recipes\PlantBasedPizza.Recipes.Infrastructure\PlantBasedPizza.Recipes.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\modules\recipes\PlantBasedPizza.Recipes.DataTransfer\PlantBasedPizza.Recipes.DataTransfer.csproj" />
     </ItemGroup>
 
 </Project>

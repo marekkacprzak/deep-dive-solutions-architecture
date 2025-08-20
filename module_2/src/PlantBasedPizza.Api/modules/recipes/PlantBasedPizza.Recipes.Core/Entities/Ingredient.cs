@@ -15,12 +15,12 @@ namespace PlantBasedPizza.Recipes.Core.Entities
             this.Quantity = quantity;
         }
         
-        public int IngredientIdentifier { get; set; }
-        
-        public string RecipeIdentifier { get; private set; }
+        public int IngredientIdentifier { get; init; }
 
-        public string Name { get; private set; } = "";
+        public string RecipeIdentifier { get; init; } = "";
 
-        public int Quantity { get; private set; }
+        public string Name { get; init; } = "";
+
+        public int Quantity { get; init; }
     }
 }

@@ -4,13 +4,11 @@ using Paramore.Brighter;
 
 namespace PlantBasedPizza.Shared.Events;
 
-public abstract class DomainEvent : IDomainEvent
+public abstract class PublicEvent : IPublicEvent, IEvent
 {
     public abstract string EventId { get; }
 
     public abstract DateTime EventDate { get; }
-
-    public abstract string CorrelationId { get; set; }
 
     [JsonIgnore]
     public abstract string EventName { get; }

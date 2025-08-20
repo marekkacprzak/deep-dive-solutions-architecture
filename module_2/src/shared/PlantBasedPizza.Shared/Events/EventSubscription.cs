@@ -10,6 +10,5 @@ public class EventSubscription<T>
         : base(new SubscriptionName(applicationName), new ChannelName(channelName), new RoutingKey(eventName),
             applicationName)
     {
-
     }
 }

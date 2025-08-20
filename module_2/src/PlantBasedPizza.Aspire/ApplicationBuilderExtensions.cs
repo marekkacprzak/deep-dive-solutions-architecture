@@ -8,6 +8,8 @@ public static class ApplicationBuilderExtensions
     public static IDistributedApplicationBuilder WithSingleApplicationInstance(
         this IDistributedApplicationBuilder builder)
     {
+        var cache = builder.AddValkey("cache");
+        
         var db = builder
             .AddPostgres("database")
             .WithLifetime(ContainerLifetime.Persistent)
@@ -15,6 +17,7 @@ public static class ApplicationBuilderExtensions
 
         var api = builder.AddProject<Projects.PlantBasedPizza_Api>("api")
             .WithReference(db)
+            .WithReference(cache)
             .WithEnvironment("ConnectionStrings__RecipesPostgresConnection", db)
             .WithEnvironment("ConnectionStrings__OrderManagerPostgresConnection", db)
             .WithEnvironment("ConnectionStrings__KitchenPostgresConnection", db)
@@ -32,6 +35,8 @@ public static class ApplicationBuilderExtensions
     public static IDistributedApplicationBuilder WithHorizontallyScaledApplication(
         this IDistributedApplicationBuilder builder)
     {
+        var cache = builder.AddValkey("cache");
+        
         var db = builder
             .AddPostgres("database")
             .WithLifetime(ContainerLifetime.Persistent)
@@ -39,6 +44,7 @@ public static class ApplicationBuilderExtensions
 
         var instanceOne = builder.AddProject<Projects.PlantBasedPizza_Api>("instance-one")
             .WithReference(db)
+            .WithReference(cache)
             .WithEnvironment("ConnectionStrings__RecipesPostgresConnection", db)
             .WithEnvironment("ConnectionStrings__OrderManagerPostgresConnection", db)
             .WithEnvironment("ConnectionStrings__KitchenPostgresConnection", db)
@@ -47,6 +53,7 @@ public static class ApplicationBuilderExtensions
             .WaitFor(db);
         var instanceTwo = builder.AddProject<Projects.PlantBasedPizza_Api>("instance-two")
             .WithReference(db)
+            .WithReference(cache)
             .WithEnvironment("ConnectionStrings__RecipesPostgresConnection", db)
             .WithEnvironment("ConnectionStrings__OrderManagerPostgresConnection", db)
             .WithEnvironment("ConnectionStrings__KitchenPostgresConnection", db)
@@ -55,6 +62,7 @@ public static class ApplicationBuilderExtensions
             .WaitFor(db);
         var instanceThree = builder.AddProject<Projects.PlantBasedPizza_Api>("instance-three")
             .WithReference(db)
+            .WithReference(cache)
             .WithEnvironment("ConnectionStrings__RecipesPostgresConnection", db)
             .WithEnvironment("ConnectionStrings__OrderManagerPostgresConnection", db)
             .WithEnvironment("ConnectionStrings__KitchenPostgresConnection", db)
@@ -75,6 +83,8 @@ public static class ApplicationBuilderExtensions
     public static IDistributedApplicationBuilder WithMigrationReadyApplications(
         this IDistributedApplicationBuilder builder)
     {
+        var cache = builder.AddValkey("cache");
+        
         var kafka = builder.AddKafka("kafka")
             .WithLifetime(ContainerLifetime.Persistent)
             .WithKafkaUI()
@@ -87,6 +97,7 @@ public static class ApplicationBuilderExtensions
         var recipeApplication = builder.AddProject<Projects.PlantBasedPizza_Recipes_Api>("recipe-api")
             .WithReference(recipesDb)
             .WithReference(kafka)
+            .WithReference(cache)
             .WithEnvironment("Messaging__Kafka", kafka)
             .WithEnvironment("ConnectionStrings__RecipesPostgresConnection", recipesDb)
             .WithHttpEndpoint(8084)
@@ -101,6 +112,8 @@ public static class ApplicationBuilderExtensions
             .WithReference(orderDb)
             .WithReference(recipeApplication)
             .WithReference(kafka)
+            .WithReference(cache)
+            .WithEnvironment("RunWorker", "true")
             .WithEnvironment("Messaging__Kafka", kafka)
             .WithEnvironment("Services__RecipeApi", "http://recipe-api")
             .WithEnvironment("UseDistributedServices", "true")
@@ -112,6 +125,8 @@ public static class ApplicationBuilderExtensions
             .WithReference(orderDb)
             .WithReference(recipeApplication)
             .WithReference(kafka)
+            .WithReference(cache)
+            .WithEnvironment("RunWorker", "true")
             .WithEnvironment("Messaging__Kafka", kafka)
             .WithEnvironment("Services__RecipeApi", "http://recipe-api")
             .WithEnvironment("UseDistributedServices", "true")
@@ -129,6 +144,7 @@ public static class ApplicationBuilderExtensions
             .WithReference(orderManagerApplication)
             .WithReference(recipeApplication)
             .WithReference(kafka)
+            .WithReference(cache)
             .WithEnvironment("Messaging__Kafka", kafka)
             .WithEnvironment("Services__RecipeApi", "http://recipe-api")
             .WithEnvironment("Services__OrderApi", "http://order-manager-api")

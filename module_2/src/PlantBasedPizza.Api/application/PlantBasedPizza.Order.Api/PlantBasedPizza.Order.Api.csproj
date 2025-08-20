@@ -27,6 +27,7 @@
     <ProjectReference Include="..\..\modules\order-manager\PlantBasedPizza.OrderManager.Core\PlantBasedPizza.OrderManager.Core.csproj" />
     <ProjectReference Include="..\..\modules\order-manager\PlantBasedPizza.OrderManager.Infrastructure\PlantBasedPizza.OrderManager.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\shared\PlantBasedPizza.Shared\PlantBasedPizza.Shared.csproj" />
+    <ProjectReference Include="..\..\modules\order-manager\PlantBasedPizza.Worker\PlantBasedPizza.Worker.csproj" />
     <ProjectReference Include="..\..\modules\payment\PlantBasedPizza.Payment.Infrastructure\PlantBasedPizza.Payment.Infrastructure.csproj" />
   </ItemGroup>
 

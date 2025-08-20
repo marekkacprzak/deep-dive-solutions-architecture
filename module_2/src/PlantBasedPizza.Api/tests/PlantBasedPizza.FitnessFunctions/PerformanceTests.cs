@@ -8,7 +8,7 @@ namespace PlantBasedPizza.FitnessFunctions;
 public class PerformanceTests
 {
     [Fact]
-    public async Task RecipeApiPerformance_ShouldRespondInside300ms()
+    public async Task RecipeApiPerformance_ShouldRespondInside100ms()
     {
         var performanceResults = new List<long>();
 
@@ -29,7 +29,7 @@ public class PerformanceTests
         var averageMilliseconds = performanceResults.Average();
         var p90Milliseconds = performanceResults.OrderBy(x => x).ElementAt((int)(performanceResults.Count * 0.9));
 
-        averageMilliseconds.Should().BeLessOrEqualTo(300, $"Average API response after 50 iterations took too long: {averageMilliseconds} ms");
+        averageMilliseconds.Should().BeLessOrEqualTo(100, $"Average API response after 50 iterations took too long: {averageMilliseconds} ms");
         p90Milliseconds.Should().BeLessOrEqualTo(450);
     }
 }

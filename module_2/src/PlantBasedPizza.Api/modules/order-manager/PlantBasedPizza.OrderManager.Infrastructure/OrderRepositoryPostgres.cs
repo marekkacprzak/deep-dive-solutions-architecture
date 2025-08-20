@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PlantBasedPizza.OrderManager.Core;
+using PlantBasedPizza.Shared.Events;
 
 namespace PlantBasedPizza.OrderManager.Infrastructure;
 
@@ -9,10 +11,14 @@ public class OrderRepositoryPostgres : IOrderRepository
 {
     private readonly ILogger<OrderRepositoryPostgres> _logger;
     private readonly OrderManagerDbContext _context;
+    private readonly IConfiguration _configuration;
+    private readonly IDomainEventDispatcher _dispatcher;
 
-    public OrderRepositoryPostgres(OrderManagerDbContext context, ILogger<OrderRepositoryPostgres> logger)
+    public OrderRepositoryPostgres(OrderManagerDbContext context, ILogger<OrderRepositoryPostgres> logger, IConfiguration configuration, IDomainEventDispatcher dispatcher)
     {
         _logger = logger;
+        _configuration = configuration;
+        _dispatcher = dispatcher;
         _context = context;
     }
 
@@ -25,8 +31,8 @@ public class OrderRepositoryPostgres : IOrderRepository
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
 
-
             foreach (var evt in order.Events)
+            {
                 await _context.OutboxItems.AddAsync(new OutboxItem
                 {
                     EventData = evt.AsString(),
@@ -35,6 +41,8 @@ public class OrderRepositoryPostgres : IOrderRepository
                     Processed = false,
                     Failed = false,
                 });
+            }
+                
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
         }
@@ -74,7 +82,7 @@ public class OrderRepositoryPostgres : IOrderRepository
 
     public async Task Update(Order order)
     {
-        using var transaction = await _context.Database.BeginTransactionAsync();
+        await using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
             _context.Orders.Update(order);
@@ -82,16 +90,21 @@ public class OrderRepositoryPostgres : IOrderRepository
 
             foreach (var evt in order.Events)
             {
-                _logger.LogInformation("Writing {evt} to outbox", evt.GetType().Name);
-
-                await _context.OutboxItems.AddAsync(new OutboxItem
+                if (!_configuration.GetValue<bool>("RunWorker"))
                 {
-                    EventData = evt.AsString(),
-                    EventType = evt.GetType()
-                        .Name,
-                    Processed = false,
-                    Failed = false,
-                });
+                    await _dispatcher.PublishAsync(evt);
+                }
+                else
+                {
+                    await _context.OutboxItems.AddAsync(new OutboxItem
+                    {
+                        EventData = evt.AsString(),
+                        EventType = evt.GetType()
+                            .Name,
+                        Processed = false,
+                        Failed = false,
+                    });
+                }
             }
 
             await _context.SaveChangesAsync();

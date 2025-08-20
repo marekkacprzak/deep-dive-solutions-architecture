@@ -26,6 +26,13 @@ public static class Setup
     {
         // Register strongly typed configuration
         services.Configure<OrderOptions>(configuration.GetSection(OrderOptions.SectionName));
+        
+        
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = configuration.GetConnectionString("cache");
+            options.InstanceName = "SharedCache";
+        });
 
         // Register DbContext
         services.AddDbContext<OrderManagerDbContext>(options =>

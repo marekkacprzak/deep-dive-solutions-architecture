@@ -1,31 +1,21 @@
 using System.Diagnostics;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using PlantBasedPizza.Events;
-using PlantBasedPizza.OrderManager.Core;
+using PlantBasedPizza.OrderManager.DataTransfer;
+using PlantBasedPizza.OrderManager.Infrastructure;
 using PlantBasedPizza.Shared.Events;
 
-namespace PlantBasedPizza.OrderManager.Infrastructure;
+namespace PlantBasedPizza.Worker;
 
-public class OrderOutboxWorker : BackgroundService
+public class OrderOutboxWorker(ILogger<OrderOutboxWorker> logger, IServiceScopeFactory scopeFactory)
+    : BackgroundService
 {
-    private readonly IServiceScopeFactory _scopeFactory;
-    private readonly ILogger<OrderOutboxWorker> _logger;
-    private readonly ActivitySource _source;
-
-    public OrderOutboxWorker(ILogger<OrderOutboxWorker> logger, IServiceScopeFactory scopeFactory)
-    {
-        _logger = logger;
-        _scopeFactory = scopeFactory;
-        _source = new ActivitySource(ApplicationDefaults.ServiceName);
-    }
+    private readonly ActivitySource _source = new(ApplicationDefaults.ServiceName);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var scope = _scopeFactory.CreateScope();
+        using var scope = scopeFactory.CreateScope();
 
         var dbContext = scope.ServiceProvider.GetRequiredService<OrderManagerDbContext>();
         var domainEventDispatcher = scope.ServiceProvider.GetRequiredService<IDomainEventDispatcher>();
@@ -46,24 +36,28 @@ public class OrderOutboxWorker : BackgroundService
                     {
                         case nameof(OrderCreatedEvent):
                             var orderCreatedEvent = JsonSerializer.Deserialize<OrderCreatedEvent>(outboxItem.EventData);
+                            
+                            // Call domain event handlers
                             await domainEventDispatcher.PublishAsync(orderCreatedEvent);
-                            await eventPublisher.Publish(orderCreatedEvent);
+                            
+                            // Publish the public event externally
+                            await eventPublisher.Publish(new OrderCreatedEventV1(orderCreatedEvent.OrderIdentifier));
                             outboxItem.Processed = true;
                             break;
                         case nameof(OrderSubmittedEvent):
                             var orderSubmittedEvent = JsonSerializer.Deserialize<OrderSubmittedEvent>(outboxItem.EventData);
                             await domainEventDispatcher.PublishAsync(orderSubmittedEvent);
-                            await eventPublisher.Publish(orderSubmittedEvent);
+                            await eventPublisher.Publish(new OrderSubmittedEventV1(orderSubmittedEvent.OrderIdentifier));
                             outboxItem.Processed = true;
                             break;
                         case nameof(OrderCompletedEvent):
                             var orderCompletedEvent = JsonSerializer.Deserialize<OrderCompletedEvent>(outboxItem.EventData);
                             await domainEventDispatcher.PublishAsync(orderCompletedEvent);
-                            await eventPublisher.Publish(orderCompletedEvent);
+                            await eventPublisher.Publish(new OrderCompletedEventV1(orderCompletedEvent.OrderIdentifier));
                             outboxItem.Processed = true;
                             break;
                         default:
-                            _logger.LogWarning("Unknown event type: {EventType}", outboxItem.EventType);
+                            logger.LogWarning("Unknown event type: {EventType}", outboxItem.EventType);
                             outboxItem.Failed = true;
                             outboxItem.FailureReason = $"Unknown event type: {outboxItem.EventType}";
                             break;
@@ -71,7 +65,7 @@ public class OrderOutboxWorker : BackgroundService
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, "An error occured while processing outbox item.");
+                    logger.LogError(e, "An error occured while processing outbox item.");
                     outboxItem.Failed = true;
                     outboxItem.FailureReason =
                         $"An error occured while processing outbox item.: {e.Message} - {e.StackTrace}";
@@ -85,7 +79,7 @@ public class OrderOutboxWorker : BackgroundService
                 catch (Exception e)
                 {
                     Activity.Current?.AddException(e);
-                    _logger.LogError(e, "An error occured while processing outbox item.");
+                    logger.LogError(e, "An error occured while processing outbox item.");
                 }
             }
 
@@ -105,7 +99,7 @@ public class OrderOutboxWorker : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Failure parsing tracecontext from outbox item");
+                logger.LogWarning(ex, "Failure parsing tracecontext from outbox item");
             }
 
         return null;

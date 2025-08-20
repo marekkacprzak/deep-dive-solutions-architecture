@@ -23,7 +23,7 @@ public class DomainEventDispatcher : IDomainEventDispatcher
     }
 
     public async Task PublishAsync<T>(T domainEvent, CancellationToken cancellationToken = default) 
-        where T : IDomainEvent, IRequest
+        where T : IDomainEvent
     {
         ArgumentNullException.ThrowIfNull(domainEvent);
 

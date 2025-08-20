@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PlantBasedPizza.OrderManager.Infrastructure;
 using PlantBasedPizza.Payment.Infrastructure;
 using PlantBasedPizza.Shared;
-using PlantBasedPizza.Shared.Logging;
+using PlantBasedPizza.Worker;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;

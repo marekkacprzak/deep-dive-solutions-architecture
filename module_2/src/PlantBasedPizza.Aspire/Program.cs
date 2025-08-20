@@ -2,8 +2,8 @@ using PlantBasedPizza.Aspire;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-// builder.WithSingleApplicationInstance();
-// builder.WithHorizontallyScaledApplicaton();
-builder.WithMigrationReadyApplications();
+builder.WithSingleApplicationInstance();
+// builder.WithHorizontallyScaledApplication();
+//builder.WithMigrationReadyApplications();
 
 await builder.Build().RunAsync();

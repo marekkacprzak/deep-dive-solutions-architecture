@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Resources;
@@ -36,6 +37,8 @@ public static class Setup
         {
             tracing.AddAspNetCoreInstrumentation();
             tracing.AddHttpClientInstrumentation();
+            tracing.AddRedisInstrumentation();
+            tracing.AddEntityFrameworkCoreInstrumentation();
             tracing.AddSource(applicationName);
             tracing.AddOtlpExporter(otlpOptions =>
             {
@@ -73,13 +76,26 @@ public static class Setup
                 .AutoFromAssemblies()
                 .AsyncHandlersFromAssemblies();
             services.AddHostedService<ServiceActivatorHostedService>();
+
+            var dlqNames = new List<string>();
+            
+            // Configure dead letter queues
+            foreach (var subscription in subscriptions)
+            {
+                var routingKey = subscription.RoutingKey;
+                var deadLetterQueue = new RoutingKey($"{routingKey}.deadletter");
+                
+                dlqNames.Add(deadLetterQueue);
+            }
+            
+            services.AddMessageProducers(configuration, applicationName, dlqNames);
         }
 
         return services;
     }
 
     public static IServiceCollection AddMessageProducers(this IServiceCollection services,
-        IConfiguration configuration, string applicationName, List<string>? messageTopics)
+        IConfiguration configuration, string applicationName, List<string>? messageTopics, params Assembly[] mapperAssemblies)
     {
         if (configuration.GetValue<bool>("UseDistributedServices"))
             services.AddBrighter()
@@ -102,7 +118,7 @@ public static class Setup
                         })
                     )
                     .Create())
-                .AutoFromAssemblies()
+                .AutoFromAssemblies(mapperAssemblies)
                 .AsyncHandlersFromAssemblies();
 
         return services;

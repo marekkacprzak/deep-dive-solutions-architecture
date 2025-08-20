@@ -8,14 +8,12 @@ namespace PlantBasedPizza.Recipes.Core.Entities
 
     public class Recipe
     {
-        private List<Ingredient> _ingredients;
-        
         [JsonConstructor]
         private Recipe()
         {
             this.RecipeIdentifier = "";
             this.Name = "";
-            this._ingredients = new List<Ingredient>();
+            this.Ingredients = new List<Ingredient>();
         }
         
         public Recipe(string recipeIdentifier, string name, decimal price)
@@ -23,31 +21,31 @@ namespace PlantBasedPizza.Recipes.Core.Entities
             this.RecipeIdentifier = recipeIdentifier;
             this.Name = name;
             this.Price = price;
-            this._ingredients = new List<Ingredient>();
+            this.Ingredients = new List<Ingredient>();
 
             // Domain event will be raised by RecipeFactory
         }
         
         [JsonPropertyName("recipeIdentifier")]
-        public string RecipeIdentifier { get; private set; }
+        public string RecipeIdentifier { get; init; }
         
         [JsonPropertyName("name")]
-        public string Name { get; private set; }
+        public string Name { get; init; }
         
         [JsonPropertyName("price")]
-        public decimal Price { get; private set; }
-
+        public decimal Price { get; init; }
+        
         [JsonPropertyName("ingredients")]
-        public IReadOnlyCollection<Ingredient> Ingredients => this._ingredients;
+        public List<Ingredient> Ingredients { get; set; }
 
         public void AddIngredient(string name, int quantity)
         {
-            if (this._ingredients == null)
+            if (this.Ingredients == null)
             {
-                this._ingredients = new List<Ingredient>();
+                this.Ingredients = new List<Ingredient>();
             }
             
-            this._ingredients.Add(new Ingredient(name, quantity));
+            this.Ingredients.Add(new Ingredient(name, quantity));
         }
     }
 }

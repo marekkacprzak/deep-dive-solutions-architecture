@@ -2,13 +2,9 @@
 // This product includes software developed at Datadog (https://www.datadoghq.com/).
 // Copyright 2025 Datadog, Inc.
 
-using PlantBasedPizza.Events;
+namespace PlantBasedPizza.Kitchen.Infrastructure;
 
-namespace PlantBasedPizza.OrderManager.Core;
-
-public interface OrderEventPublisher
+public class DeadLetterQueuePublisher
 {
-    Task Publish(OrderCreatedEvent evt);
-    Task Publish(OrderSubmittedEvent evt);
-    Task Publish(OrderCompletedEvent evt);
+    
 }

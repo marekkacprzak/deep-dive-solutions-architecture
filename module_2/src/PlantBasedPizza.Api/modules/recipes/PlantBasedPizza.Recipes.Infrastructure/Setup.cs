@@ -11,6 +11,12 @@ public static class Setup
     public static IServiceCollection AddRecipeInfrastructure(this IServiceCollection services,
         IConfiguration configuration, Serilog.ILogger logger, string? overrideConnectionString = null)
     {
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = configuration.GetConnectionString("cache");
+            options.InstanceName = "PlantBasedPizzaRecipesCache";
+        });
+        
         // Register DbContext
         services.AddDbContext<RecipesDbContext>(options =>
             options.UseNpgsql(

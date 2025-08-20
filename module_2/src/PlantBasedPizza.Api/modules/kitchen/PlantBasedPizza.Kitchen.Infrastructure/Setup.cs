@@ -14,6 +14,13 @@ namespace PlantBasedPizza.Kitchen.Infrastructure
         public static IServiceCollection AddKitchenInfrastructure(this IServiceCollection services,
             IConfiguration configuration, string? overrideConnectionString = null)
         {
+            
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration.GetConnectionString("cache");
+                options.InstanceName = "SharedCache";
+            });
+            
             // Register DbContext
             services.AddDbContext<KitchenDbContext>(options =>
                 options.UseNpgsql(

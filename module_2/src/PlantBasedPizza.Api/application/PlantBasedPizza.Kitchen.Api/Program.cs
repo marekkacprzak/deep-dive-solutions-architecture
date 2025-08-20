@@ -2,6 +2,7 @@ using System.Threading.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using PlantBasedPizza.Events;
 using PlantBasedPizza.Kitchen.Infrastructure;
+using PlantBasedPizza.OrderManager.DataTransfer;
 using PlantBasedPizza.Shared;
 using PlantBasedPizza.Shared.Events;
 using PlantBasedPizza.Shared.Logging;
@@ -35,9 +36,13 @@ var applicationName = "kitchen-service";
 builder.Services
     .AddKitchenInfrastructure(builder.Configuration, overrideConnectionString)
     .AddSharedInfrastructure(builder.Configuration, applicationName)
+    .AddMessageProducers(builder.Configuration, applicationName, new List<string>(1)
+    {
+        "kitchen.prep-started"
+    })
     .AddMessageConsumers(builder.Configuration, applicationName, new[]
     {
-        new EventSubscription<OrderSubmittedEvent>(applicationName, "kitchen.orderSubmitted", "orders.order-submitted")
+        new EventSubscription<OrderSubmittedEventV1>(applicationName, "kitchen.orderSubmitted", OrderSubmittedEventV1.EventTypeName)
     })
     .AddHttpClient();
 

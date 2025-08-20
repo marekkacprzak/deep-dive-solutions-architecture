@@ -15,6 +15,7 @@
         <PackageReference Include="Aspire.Hosting.AppHost" Version="9.4.1" />
         <PackageReference Include="Aspire.Hosting.Kafka" Version="9.4.1" />
         <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.4.1" />
+        <PackageReference Include="Aspire.Hosting.Valkey" Version="9.4.1" />
         <PackageReference Include="Aspire.Hosting.Yarp" Version="9.3.1-preview.1.25305.6" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
     </ItemGroup>

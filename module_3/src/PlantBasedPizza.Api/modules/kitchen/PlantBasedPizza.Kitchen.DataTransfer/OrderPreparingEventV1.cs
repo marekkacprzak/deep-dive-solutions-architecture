@@ -6,10 +6,8 @@ namespace PlantBasedPizza.Kitchen.DataTransfer
     public class OrderPreparingEventV1 : PublicEvent
     {
         public static string EventTypeName = "kitchen.prep-started";
-        public OrderPreparingEventV1(string orderIdentifier)
+        public OrderPreparingEventV1(string orderIdentifier) : base()
         {
-            this.EventId = Guid.NewGuid().ToString();
-            this.EventDate = DateTime.Now.ToUniversalTime();
             this.OrderIdentifier = orderIdentifier;
         }
         
@@ -17,10 +15,6 @@ namespace PlantBasedPizza.Kitchen.DataTransfer
         
         public override string EventVersion => "v1";
         
-        public override string EventId { get; }
-        
-        public override DateTime EventDate { get; }
-
         public string OrderIdentifier { get; private set; }
         public override string AsString()
         {

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using PlantBasedPizza.Kitchen.Core.Adapters;
 using PlantBasedPizza.Kitchen.Core.Services;
@@ -16,6 +17,16 @@ namespace PlantBasedPizza.Kitchen.Core.Handlers
         public async Task Handle(OrderSubmittedEvent evt)
         {
             Guard.AgainstNull(evt, nameof(evt));
+            Activity.Current?.SetTag("order.identifier", evt.OrderIdentifier);
+            
+            var existingRequestForOrder = await kitchenRequestRepository.Retrieve(evt.OrderIdentifier);
+
+            if (existingRequestForOrder != null)
+            {
+                Activity.Current?.SetTag("order.received", "true");
+                
+                return;
+            }
 
             var recipes = new List<RecipeAdapter>();
             

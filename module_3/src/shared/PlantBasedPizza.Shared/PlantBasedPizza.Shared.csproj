@@ -14,12 +14,18 @@
     <PackageReference Include="MongoDB.Driver" Version="3.4.2" />
     <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.12.0-beta.2" />
     <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.12.0-beta.2" />
-    <PackageReference Include="Paramore.Brighter" Version="9.9.10" />
-    <PackageReference Include="Paramore.Brighter.Extensions.DependencyInjection" Version="9.9.10" />
-    <PackageReference Include="Paramore.Brighter.MessagingGateway.Kafka" Version="9.9.10" />
-    <PackageReference Include="Paramore.Brighter.ServiceActivator" Version="9.9.10" />
-    <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.DependencyInjection" Version="9.9.10" />
-    <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.Hosting" Version="9.9.10" />
+    <PackageReference Include="Paramore.Brighter" Version="10.0.0-preview.8" />
+    <PackageReference Include="Paramore.Brighter.Extensions.DependencyInjection" Version="10.0.0-preview.8" />
+    <PackageReference Include="Paramore.Brighter.Inbox.Postgres" Version="10.0.0-preview.8" />
+    <PackageReference Include="Paramore.Brighter.MessagingGateway.Kafka" Version="10.0.0-preview.8" />
+    <PackageReference Include="Paramore.Brighter.ServiceActivator" Version="10.0.0-preview.8" />
+    <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.DependencyInjection" Version="10.0.0-preview.8" />
+    <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.Hosting" Version="10.0.0-preview.8" />
+    <PackageReference Include="Paramore.Darker" Version="4.1.1" />
+    <PackageReference Include="Paramore.Darker.Policies" Version="4.1.1" />
+    <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
+    <PackageReference Include="Polly.Extensions" Version="8.6.2" />
+    <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageReference Include="Serilog" Version="4.3.0" />
     <PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
     <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />

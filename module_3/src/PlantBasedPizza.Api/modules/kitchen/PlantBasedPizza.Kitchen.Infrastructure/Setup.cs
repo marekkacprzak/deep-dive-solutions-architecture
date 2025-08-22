@@ -5,6 +5,7 @@ using PlantBasedPizza.Kitchen.Core;
 using PlantBasedPizza.Kitchen.Core.Handlers;
 using PlantBasedPizza.Kitchen.Core.Services;
 using PlantBasedPizza.Shared.Events;
+using PlantBasedPizza.Shared.Policies;
 
 namespace PlantBasedPizza.Kitchen.Infrastructure
 {
@@ -22,7 +23,7 @@ namespace PlantBasedPizza.Kitchen.Infrastructure
             // Register DbContext
             services.AddDbContext<KitchenDbContext>(options =>
                 options.UseNpgsql(
-                    overrideConnectionString ?? configuration.GetConnectionString("KitchenPostgresConnection"),
+                    overrideConnectionString ?? configuration.GetConnectionString("Database"),
                     b => b.MigrationsAssembly("PlantBasedPizza.Kitchen.Infrastructure")));
 
             services.AddServiceDiscovery();
@@ -35,11 +36,15 @@ namespace PlantBasedPizza.Kitchen.Infrastructure
                 {
                     client.BaseAddress = new Uri(recipeServiceEndpoint, UriKind.Absolute);
                 })
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                .AddPolicyHandler(Retry.DefaultHttpRetryPolicy())
                 .AddServiceDiscovery();
             services.AddHttpClient<IOrderManagerService, HttpOrderService>(client =>
                 {
                     client.BaseAddress = new Uri(orderServiceEndpoint, UriKind.Absolute);
                 })
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+                .AddPolicyHandler(Retry.DefaultHttpRetryPolicy())
                 .AddServiceDiscovery();
             
             services.AddScoped<OrderSubmittedEventHandler>();

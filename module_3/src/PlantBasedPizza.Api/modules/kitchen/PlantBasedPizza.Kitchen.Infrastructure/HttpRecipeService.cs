@@ -1,28 +1,44 @@
+using System.Diagnostics;
 using System.Text.Json;
+using Microsoft.Extensions.Caching.Distributed;
 using PlantBasedPizza.Kitchen.Core.Adapters;
 using PlantBasedPizza.Kitchen.Core.Services;
 
 namespace PlantBasedPizza.Kitchen.Infrastructure
 {
-    public class HttpRecipeService : IRecipeService
+    public class HttpRecipeService(HttpClient httpClient, IDistributedCache distributedCache, ActivitySource activitySource) : IRecipeService
     {
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions _jsonSerializerOptions;
-
-        public HttpRecipeService(HttpClient httpClient)
+        private readonly JsonSerializerOptions _jsonSerializerOptions = new()
         {
-            _httpClient = httpClient;
-            _jsonSerializerOptions = new JsonSerializerOptions()
-            {
-                PropertyNameCaseInsensitive = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-            };
-        }
+            PropertyNameCaseInsensitive = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        };
+        private readonly IDistributedCache _distributedCache = distributedCache;
 
         public async Task<RecipeAdapter> GetRecipe(string recipeIdentifier)
         {
-            var recipe = await this._httpClient.GetAsync($"/recipes/{recipeIdentifier}");
+            using var getRecipeActivity = activitySource.StartActivity("get-recipe");
+            getRecipeActivity?.SetTag("recipeIdentifier", recipeIdentifier);
+            
+            var cachedRecipe = await _distributedCache.GetStringAsync($"kitchen:recipe:{recipeIdentifier}");
+
+            if (!string.IsNullOrEmpty(cachedRecipe))
+            {
+                getRecipeActivity?.SetTag("cache.hit", "true");
+                return JsonSerializer.Deserialize<RecipeAdapter>(cachedRecipe, _jsonSerializerOptions);
+            }
+            
+            getRecipeActivity?.SetTag("cache.hit", "false");
+            
+            var recipe = await httpClient.GetAsync($"/recipes/{recipeIdentifier}");
+            
+            await _distributedCache.SetStringAsync($"kitchen:recipe:{recipeIdentifier}",
+                await recipe.Content.ReadAsStringAsync(),
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
+                });
 
             return JsonSerializer.Deserialize<RecipeAdapter>(await recipe.Content.ReadAsStringAsync(), _jsonSerializerOptions);
         }

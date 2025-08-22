@@ -1,3 +1,6 @@
+using Confluent.Kafka;
+using Confluent.Kafka.Admin;
+
 namespace PlantBasedPizza.Aspire;
 
 public static class ApplicationBuilderExtensions
@@ -11,6 +14,39 @@ public static class ApplicationBuilderExtensions
             .WithLifetime(ContainerLifetime.Persistent)
             .WithKafkaUI()
             .WithLifetime(ContainerLifetime.Persistent);
+        
+        builder.Eventing.Subscribe<ResourceReadyEvent>(kafka.Resource, async (@event, ct) =>
+        {
+            var cs = await kafka.Resource.ConnectionStringExpression.GetValueAsync(ct);
+
+            var config = new AdminClientConfig
+            {
+                BootstrapServers = cs
+            };
+
+            using var adminClient = new AdminClientBuilder(config).Build();
+            try
+            {
+                await adminClient.CreateTopicsAsync(new TopicSpecification[]
+                {
+                    new TopicSpecification { Name = "orders.order-completed", NumPartitions = 1, ReplicationFactor = 1 },
+                    new TopicSpecification { Name = "orders.order-created", NumPartitions = 1, ReplicationFactor = 1 },
+                    new TopicSpecification { Name = "orders.order-ready-for-delivery", NumPartitions = 1, ReplicationFactor = 1 },
+                    new TopicSpecification { Name = "orders.order-submitted", NumPartitions = 1, ReplicationFactor = 1 },
+                    new TopicSpecification { Name = "kitchen.baked", NumPartitions = 1, ReplicationFactor = 1 },
+                    new TopicSpecification { Name = "kitchen.prep-started", NumPartitions = 1, ReplicationFactor = 1 },
+                    new TopicSpecification { Name = "kitchen.prep-complete", NumPartitions = 1, ReplicationFactor = 1 },
+                    new TopicSpecification { Name = "kitchen.quality-checked", NumPartitions = 1, ReplicationFactor = 1 },
+                    new TopicSpecification { Name = "delivery.driver-collected", NumPartitions = 1, ReplicationFactor = 1 },
+                    new TopicSpecification { Name = "delivery.order-delivered", NumPartitions = 1, ReplicationFactor = 1 },
+                });
+            }
+            catch (CreateTopicsException e)
+            {
+                Console.WriteLine($"An error occurred creating topic: {e.Message}");
+                throw;
+            }
+        });
 
         var recipesDb = builder
             .AddPostgres("recipesDb")
@@ -21,7 +57,7 @@ public static class ApplicationBuilderExtensions
             .WithReference(kafka)
             .WithReference(cache)
             .WithEnvironment("Messaging__Kafka", kafka)
-            .WithEnvironment("ConnectionStrings__RecipesPostgresConnection", recipesDb)
+            .WithEnvironment("ConnectionStrings__Database", recipesDb)
             .WithHttpEndpoint(8084)
             .WaitFor(recipesDb)
             .WaitFor(kafka);
@@ -37,7 +73,7 @@ public static class ApplicationBuilderExtensions
             .WithReference(cache)
             .WithEnvironment("Messaging__Kafka", kafka)
             .WithEnvironment("Services__RecipeApi", "http://recipe-api")
-            .WithEnvironment("ConnectionStrings__OrderManagerPostgresConnection", orderDb)
+            .WithEnvironment("ConnectionStrings__Database", orderDb)
             .WithHttpEndpoint(8081)
             .WaitFor(orderDb)
             .WaitFor(kafka);
@@ -48,7 +84,7 @@ public static class ApplicationBuilderExtensions
             .WithReference(cache)
             .WithEnvironment("Messaging__Kafka", kafka)
             .WithEnvironment("Services__RecipeApi", "http://recipe-api")
-            .WithEnvironment("ConnectionStrings__OrderManagerPostgresConnection", orderDb)
+            .WithEnvironment("ConnectionStrings__Database", orderDb)
             .WithHttpEndpoint(8085)
             .WaitFor(orderDb)
             .WaitFor(kafka);
@@ -66,7 +102,7 @@ public static class ApplicationBuilderExtensions
             .WithEnvironment("Messaging__Kafka", kafka)
             .WithEnvironment("Services__RecipeApi", "http://recipe-api")
             .WithEnvironment("Services__OrderApi", "http://order-manager-api")
-            .WithEnvironment("ConnectionStrings__KitchenPostgresConnection", kitchenDb)
+            .WithEnvironment("ConnectionStrings__Database", kitchenDb)
             .WithHttpEndpoint(8082)
             .WaitFor(kitchenDb)
             .WaitFor(kafka);
@@ -79,7 +115,7 @@ public static class ApplicationBuilderExtensions
             .WithReference(deliveryDb)
             .WithReference(kafka)
             .WithEnvironment("Messaging__Kafka", kafka)
-            .WithEnvironment("ConnectionStrings__DeliveryPostgresConnection", deliveryDb)
+            .WithEnvironment("ConnectionStrings__Database", deliveryDb)
             .WithHttpEndpoint(8083)
             .WaitFor(deliveryDb)
             .WaitFor(kafka);

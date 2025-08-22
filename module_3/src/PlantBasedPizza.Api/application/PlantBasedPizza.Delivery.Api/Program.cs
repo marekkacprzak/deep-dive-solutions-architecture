@@ -34,14 +34,15 @@ var applicationName = "delivery-service";
 // Connect to a PostgreSQL database.
 builder.Services.AddDeliveryModuleInfrastructure(builder.Configuration, overrideConnectionString)
     .AddSharedInfrastructure(builder.Configuration, applicationName)
-    .AddMessageProducers(builder.Configuration, applicationName, new List<string>(2)
+    .AddMessageProducers(builder.Configuration, applicationName, new List<PublicEvent>(2)
     {
-        DriverCollectedOrderEventV1.EventTypeName,
-        OrderDeliveredEventV1.EventTypeName
+        new DriverCollectedOrderEventV1("", ""),
+        new OrderDeliveredEventV1("")
     })
     .AddMessageConsumers(builder.Configuration, applicationName, new[]
     {
-        new EventSubscription<OrderReadyForDeliveryEventV1>(applicationName, "delivery.orderReadyForDelivery", OrderReadyForDeliveryEventV1.EventTypeName)
+        new EventSubscription<OrderReadyForDeliveryEventV1>(applicationName, "delivery.orderReadyForDelivery",
+            OrderReadyForDeliveryEventV1.EventTypeName)
     })
     .AddHttpClient();
 
@@ -87,17 +88,17 @@ using (var scope = serviceScopeFactory.CreateScope())
 app.Map("/health", async () =>
 {
     logger.Information("Health check requested");
-    
+
     var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
-    
+
     using var scope = serviceScopeFactory.CreateScope();
 
     var deliveryDbContext = scope.ServiceProvider.GetRequiredService<DeliveryDbContext>();
     var deliveryConnectionState = await deliveryDbContext.Database.CanConnectAsync();
-    
+
     return Results.Ok(new
     {
-        deliveryState = deliveryConnectionState,
+        deliveryState = deliveryConnectionState
     });
 });
 

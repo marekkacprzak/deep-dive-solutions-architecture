@@ -6,9 +6,14 @@ namespace PlantBasedPizza.Shared.Events;
 
 public abstract class PublicEvent : IPublicEvent, IEvent
 {
-    public abstract string EventId { get; }
+    public PublicEvent()
+    {
+        Id = Id.Random();
+        CorrelationId = Id.Random();
+        EventDate = DateTime.UtcNow;
+    }
 
-    public abstract DateTime EventDate { get; }
+    public DateTime EventDate { get; }
 
     [JsonIgnore]
     public abstract string EventName { get; }
@@ -18,17 +23,8 @@ public abstract class PublicEvent : IPublicEvent, IEvent
 
     public abstract string AsString();
 
-    public Guid Id
-    {
-        get
-        {
-            return Guid.Parse(EventId);
-        }
-        set
-        {
-            //NoOp
-        }
-    }
+    public Id? CorrelationId { get; set; }
+    public Id Id { get; set; }
 
     public Activity Span
     {

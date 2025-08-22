@@ -12,7 +12,7 @@ public class OrderReadyForDeliveryMessageMapper: IAmAMessageMapper<OrderReadyFor
     {
         PropertyNameCaseInsensitive = true
     };
-    public Message MapToMessage(OrderReadyForDeliveryEventV1 request)
+    public Message MapToMessage(OrderReadyForDeliveryEventV1 request, Publication publication)
     {
         var header = new MessageHeader(messageId: request.Id, topic: request.EventName, messageType: MessageType.MT_EVENT);
         var body = new MessageBody(request.AsString());
@@ -24,4 +24,6 @@ public class OrderReadyForDeliveryMessageMapper: IAmAMessageMapper<OrderReadyFor
     {
         return JsonSerializer.Deserialize<OrderReadyForDeliveryEventV1>(message.Body.Value, _jsonSerializerOptions);
     }
+
+    public IRequestContext? Context { get; set; }
 }

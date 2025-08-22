@@ -2,6 +2,7 @@ using System.Threading.RateLimiting;
 using PlantBasedPizza.OrderManager.Infrastructure;
 using PlantBasedPizza.Payment.Infrastructure;
 using PlantBasedPizza.Shared;
+using PlantBasedPizza.Shared.Events;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;
@@ -31,7 +32,7 @@ var applicationName = "PlantBasedPizza-Order.Api";
 builder.Services.AddOrderManagerInfrastructure(builder.Configuration, overrideConnectionString)
     .AddPaymentInfrastructure()
     .AddSharedInfrastructure(builder.Configuration, applicationName)
-    .AddMessageProducers(builder.Configuration, applicationName, new List<string>())
+    .AddMessageProducers(builder.Configuration, applicationName, new List<PublicEvent>())
     .AddHttpClient();
 
 builder.Services.AddRateLimiter(options =>

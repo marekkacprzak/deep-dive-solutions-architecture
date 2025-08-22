@@ -7,20 +7,14 @@ namespace PlantBasedPizza.Kitchen.DataTransfer
     {
         public static string EventTypeName = "kitchen.quality-checked";
         
-        public OrderQualityCheckedEventV1(string orderIdentifier)
+        public OrderQualityCheckedEventV1(string orderIdentifier) : base()
         {
-            this.EventId = Guid.NewGuid().ToString();
-            this.EventDate = DateTime.Now.ToUniversalTime();
             this.OrderIdentifier = orderIdentifier;
         }
         
         public override string EventName => EventTypeName;
         
         public override string EventVersion => "v1";
-        
-        public override string EventId { get; }
-        
-        public override DateTime EventDate { get; }
         public string OrderIdentifier { get; private set; }
         public override string AsString()
         {

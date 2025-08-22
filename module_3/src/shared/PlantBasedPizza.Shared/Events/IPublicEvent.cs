@@ -6,8 +6,6 @@ namespace PlantBasedPizza.Shared.Events
         
         string EventVersion { get; }
         
-        string EventId { get; }
-        
         DateTime EventDate { get; }
     }
 }

@@ -11,20 +11,15 @@ namespace PlantBasedPizza.OrderManager.DataTransfer;
 public class OrderReadyForDeliveryEventV1 : PublicEvent
 {
     public static string EventTypeName => "orders.order-ready-for-delivery";
-    private readonly string _eventId;
 
     [JsonConstructor]
-    public OrderReadyForDeliveryEventV1()
+    public OrderReadyForDeliveryEventV1() : base()
     {
-        _eventId = Guid.NewGuid().ToString();
-        EventDate = DateTime.Now.ToUniversalTime();
     }
 
     public OrderReadyForDeliveryEventV1(string orderIdentifier, string addressLine1, string addressLine2,
-        string addressLine3, string addressLine4, string addressLine5, string postcode)
+        string addressLine3, string addressLine4, string addressLine5, string postcode) : base()
     {
-        _eventId = Guid.NewGuid().ToString();
-        EventDate = DateTime.Now.ToUniversalTime();
         OrderIdentifier = orderIdentifier;
         DeliveryAddressLine1 = addressLine1;
         DeliveryAddressLine2 = addressLine2;
@@ -51,10 +46,6 @@ public class OrderReadyForDeliveryEventV1 : PublicEvent
     public override string EventName => EventTypeName;
 
     public override string EventVersion => "v1";
-
-    public override string EventId => _eventId;
-
-    public override DateTime EventDate { get; }
 
     public override string AsString()
     {

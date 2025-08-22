@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Paramore.Brighter;
 using PlantBasedPizza.Delivery.DataTransfer;
 using PlantBasedPizza.Kitchen.DataTransfer;
+using PlantBasedPizza.OrderManager.DataTransfer;
 using PlantBasedPizza.OrderManager.Infrastructure;
 using PlantBasedPizza.Payment.Infrastructure;
 using PlantBasedPizza.Shared;
@@ -36,20 +37,26 @@ var overrideConnectionString = Environment.GetEnvironmentVariable("OVERRIDE_CONN
 var applicationName = "PlantBasedPizza-Order.Worker";
 
 builder.Services
-    .AddMessageProducers(builder.Configuration, applicationName, new List<string>(3)
+    .AddMessageProducers(builder.Configuration, applicationName, new List<PublicEvent>(3)
     {
-        "orders.order-created",
-        "orders.order-submitted",
-        "orders.order-completed"
+        new OrderCreatedEventV1(""),
+        new OrderSubmittedEventV1(""),
+        new OrderCompletedEventV1("")
     }, Assembly.Load("PlantBasedPizza.OrderManager.DataTransfer"))
     .AddMessageConsumers(builder.Configuration, applicationName, new Subscription[6]
     {
-        new EventSubscription<OrderPreparingEventV1>(applicationName, "order.orderPreparing", OrderPreparingEventV1.EventTypeName),
-        new EventSubscription<OrderPrepCompleteEventV1>(applicationName, "order.orderPreparing", OrderPrepCompleteEventV1.EventTypeName),
-        new EventSubscription<OrderBakedEventV1>(applicationName, "order.orderPreparing", OrderBakedEventV1.EventTypeName),
-        new EventSubscription<OrderQualityCheckedEventV1>(applicationName, "order.orderPreparing", OrderQualityCheckedEventV1.EventTypeName),
-        new EventSubscription<DriverCollectedOrderEventV1>(applicationName, "order.driverCollectedOrder", DriverCollectedOrderEventV1.EventTypeName),
-        new EventSubscription<OrderDeliveredEventV1>(applicationName, "order.orderDelivered", OrderDeliveredEventV1.EventTypeName),
+        new EventSubscription<OrderPreparingEventV1>(applicationName, "order.orderPreparing",
+            OrderPreparingEventV1.EventTypeName),
+        new EventSubscription<OrderPrepCompleteEventV1>(applicationName, "order.orderPreparing",
+            OrderPrepCompleteEventV1.EventTypeName),
+        new EventSubscription<OrderBakedEventV1>(applicationName, "order.orderPreparing",
+            OrderBakedEventV1.EventTypeName),
+        new EventSubscription<OrderQualityCheckedEventV1>(applicationName, "order.orderPreparing",
+            OrderQualityCheckedEventV1.EventTypeName),
+        new EventSubscription<DriverCollectedOrderEventV1>(applicationName, "order.driverCollectedOrder",
+            DriverCollectedOrderEventV1.EventTypeName),
+        new EventSubscription<OrderDeliveredEventV1>(applicationName, "order.orderDelivered",
+            OrderDeliveredEventV1.EventTypeName)
     })
     .AddOrderManagerInfrastructure(builder.Configuration, overrideConnectionString)
     .AddPaymentInfrastructure()

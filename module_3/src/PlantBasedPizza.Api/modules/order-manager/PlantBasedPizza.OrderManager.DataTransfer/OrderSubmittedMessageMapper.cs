@@ -9,7 +9,7 @@ namespace PlantBasedPizza.OrderManager.DataTransfer;
 
 public class OrderSubmittedMessageMapper : IAmAMessageMapper<OrderSubmittedEventV1>
 {
-    public Message MapToMessage(OrderSubmittedEventV1 request)
+    public Message MapToMessage(OrderSubmittedEventV1 request, Publication publication)
     {
         var header = new MessageHeader(request.Id, request.EventName, MessageType.MT_EVENT);
         var body = new MessageBody(request.AsString());
@@ -23,4 +23,6 @@ public class OrderSubmittedMessageMapper : IAmAMessageMapper<OrderSubmittedEvent
 
         return evt;
     }
+
+    public IRequestContext? Context { get; set; }
 }

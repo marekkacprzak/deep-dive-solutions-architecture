@@ -23,7 +23,7 @@ namespace PlantBasedPizza.Deliver.Infrastructure
             // Register DbContext
             services.AddDbContext<DeliveryDbContext>(options =>
                 options.UseNpgsql(
-                    overrideConnectionString ?? configuration.GetConnectionString("DeliveryPostgresConnection"),
+                    overrideConnectionString ?? configuration.GetConnectionString("Database"),
                     b => b.MigrationsAssembly("PlantBasedPizza.Deliver.Infrastructure")));
 
             services.AddSingleton<IDeliveryEventPublisher, PublicEventPublisher>();

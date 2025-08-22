@@ -14,6 +14,7 @@ using PlantBasedPizza.OrderManager.Core.MarkAwaitingCollection;
 using PlantBasedPizza.OrderManager.Core.Services;
 using PlantBasedPizza.OrderManager.Core.SubmitOrder;
 using PlantBasedPizza.OrderManager.DataTransfer;
+using PlantBasedPizza.Shared.Policies;
 
 namespace PlantBasedPizza.OrderManager.Infrastructure;
 
@@ -25,7 +26,6 @@ public static class Setup
         // Register strongly typed configuration
         services.Configure<OrderOptions>(configuration.GetSection(OrderOptions.SectionName));
         
-        
         services.AddStackExchangeRedisCache(options =>
         {
             options.Configuration = configuration.GetConnectionString("cache");
@@ -35,7 +35,7 @@ public static class Setup
         // Register DbContext
         services.AddDbContext<OrderManagerDbContext>(options =>
             options.UseNpgsql(
-                overrideConnectionString ?? configuration.GetConnectionString("OrderManagerPostgresConnection"),
+                overrideConnectionString ?? configuration.GetConnectionString("Database"),
                 b => b.MigrationsAssembly("PlantBasedPizza.OrderManager.Infrastructure")));
 
         services.AddTransient<OrderManagerDataTransferService>();
@@ -57,6 +57,8 @@ public static class Setup
             {
                 client.BaseAddress = new Uri(recipeServiceEndpoint, UriKind.Absolute);
             })
+            .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+            .AddPolicyHandler(Retry.DefaultHttpRetryPolicy())
             .AddServiceDiscovery();
         services.AddSingleton<OrderEventPublisher, DistributedEventPublisher>();
 

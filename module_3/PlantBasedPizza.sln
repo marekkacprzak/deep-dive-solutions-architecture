@@ -29,8 +29,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBasedPizza.Recipes.Inf
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E630CA1B-339D-4697-9FFF-AB9D64C9507D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBasedPizza.Api", "src\PlantBasedPizza.Api\application\PlantBasedPizza.Api\PlantBasedPizza.Api.csproj", "{77042AE0-1337-4133-9073-A7C33EBD3DCC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "kitchen", "kitchen", "{22DC111E-0E05-48BD-B40C-24B6848075C2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlantBasedPizza.Kitchen.Core", "src\PlantBasedPizza.Api\modules\kitchen\PlantBasedPizza.Kitchen.Core\PlantBasedPizza.Kitchen.Core.csproj", "{9D3A9574-D5AA-40F9-99D5-62597FC5DF60}"
@@ -139,10 +137,6 @@ Global
 		{105637E9-08EF-4343-8065-3B35E5648046}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{105637E9-08EF-4343-8065-3B35E5648046}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{105637E9-08EF-4343-8065-3B35E5648046}.Release|Any CPU.Build.0 = Release|Any CPU
-		{77042AE0-1337-4133-9073-A7C33EBD3DCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77042AE0-1337-4133-9073-A7C33EBD3DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77042AE0-1337-4133-9073-A7C33EBD3DCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77042AE0-1337-4133-9073-A7C33EBD3DCC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9D3A9574-D5AA-40F9-99D5-62597FC5DF60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9D3A9574-D5AA-40F9-99D5-62597FC5DF60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D3A9574-D5AA-40F9-99D5-62597FC5DF60}.Release|Any CPU.ActiveCfg = Release|Any CPU

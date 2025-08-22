@@ -20,7 +20,7 @@ public static class Setup
         // Register DbContext
         services.AddDbContext<RecipesDbContext>(options =>
             options.UseNpgsql(
-                    overrideConnectionString ?? configuration.GetConnectionString("RecipesPostgresConnection"),
+                    overrideConnectionString ?? configuration.GetConnectionString("Database"),
                     b =>
                         b.MigrationsAssembly("PlantBasedPizza.Recipes.Infrastructure")
                             .EnableRetryOnFailure(

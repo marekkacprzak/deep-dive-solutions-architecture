@@ -4,6 +4,6 @@ namespace PlantBasedPizza.IntegrationTests.Drivers
 {
     public static class TestConstants
     {
-        public static string DefaultTestUrl = Environment.GetEnvironmentVariable("TEST_URL") ?? "http://localhost:64959";
+        public static string DefaultTestUrl = Environment.GetEnvironmentVariable("TEST_URL") ?? "http://localhost:55126";
     }
 }

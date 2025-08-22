@@ -1,16 +1,13 @@
-
-
-
-
 using System.Text.Json;
 using Paramore.Brighter;
 
 namespace PlantBasedPizza.OrderManager.DataTransfer;
 
-public class OrderCompletedMessageMapper: IAmAMessageMapper<OrderCompletedEventV1> {
-    public Message MapToMessage(OrderCompletedEventV1 request)
+public class OrderCompletedMessageMapper : IAmAMessageMapper<OrderCompletedEventV1>
+{
+    public Message MapToMessage(OrderCompletedEventV1 request, Publication publication)
     {
-        var header = new MessageHeader(messageId: request.Id, topic: request.EventName, messageType: MessageType.MT_EVENT);
+        var header = new MessageHeader(request.Id, request.EventName, MessageType.MT_EVENT);
         var body = new MessageBody(request.AsString());
         var message = new Message(header, body);
         return message;
@@ -20,4 +17,6 @@ public class OrderCompletedMessageMapper: IAmAMessageMapper<OrderCompletedEventV
     {
         return JsonSerializer.Deserialize<OrderCompletedEventV1>(message.Body.Value);
     }
+
+    public IRequestContext? Context { get; set; }
 }

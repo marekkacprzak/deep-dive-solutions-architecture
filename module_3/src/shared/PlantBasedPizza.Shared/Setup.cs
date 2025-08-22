@@ -5,10 +5,16 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Paramore.Brighter;
 using Paramore.Brighter.Extensions.DependencyInjection;
+using Paramore.Brighter.Inbox;
+using Paramore.Brighter.Inbox.Postgres;
 using Paramore.Brighter.MessagingGateway.Kafka;
+using Paramore.Brighter.Observability;
 using Paramore.Brighter.ServiceActivator.Extensions.DependencyInjection;
 using Paramore.Brighter.ServiceActivator.Extensions.Hosting;
 using PlantBasedPizza.Shared.Events;
+using PlantBasedPizza.Shared.Policies;
+using Polly;
+using Polly.Registry;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;
@@ -57,6 +63,8 @@ public static class Setup
     public static IServiceCollection AddMessageConsumers(this IServiceCollection services,
         IConfiguration configuration, string applicationName, Subscription[] subscriptions)
     {
+        if (subscriptions.Length == 0) return services;
+
         // Kafka consumer configuration
         var consumerFactory = new KafkaMessageConsumerFactory(new KafkaMessagingGatewayConfiguration
         {
@@ -66,57 +74,90 @@ public static class Setup
             SaslMechanisms = SaslMechanism.Plain
         });
 
-        services.AddServiceActivator(options =>
+        services.AddConsumers(options =>
             {
-                options.ChannelFactory = new ChannelFactory(consumerFactory);
+                options.InboxConfiguration = new InboxConfiguration(
+                    new InMemoryInbox(TimeProvider.System),
+                    InboxScope.All, true, OnceOnlyAction.Warn);
+                options.DefaultChannelFactory = new ChannelFactory(consumerFactory);
+                options.ResiliencePipelineRegistry = new ResiliencePipelineRegistry<string>()
+                    .AddBrighterDefault()
+                    .AddDefaultRetries();
+                options.InstrumentationOptions = InstrumentationOptions.All;
                 options.Subscriptions = subscriptions;
             })
-            .AutoFromAssemblies()
-            .AsyncHandlersFromAssemblies();
+            .ConfigureJsonSerialisation(options => { options.PropertyNameCaseInsensitive = true; })
+            .AutoFromAssemblies();
+
         services.AddHostedService<ServiceActivatorHostedService>();
 
-        var dlqNames = new List<string>();
-            
+        var dlqNames = new List<PublicEvent>();
+
         // Configure dead letter queues
         foreach (var subscription in subscriptions)
         {
             var routingKey = subscription.RoutingKey;
             var deadLetterQueue = new RoutingKey($"{routingKey}.deadletter");
-                
-            dlqNames.Add(deadLetterQueue);
+
+            dlqNames.Add(new DLQMessage(deadLetterQueue));
         }
-            
+
         services.AddMessageProducers(configuration, applicationName, dlqNames);
 
         return services;
     }
 
     public static IServiceCollection AddMessageProducers(this IServiceCollection services,
-        IConfiguration configuration, string applicationName, List<string>? messageTopics, params Assembly[] mapperAssemblies)
+        IConfiguration configuration, string applicationName, List<PublicEvent>? messageTopics,
+        params Assembly[] mapperAssemblies)
     {
-        services.AddBrighter()
-            .UseExternalBus(new KafkaProducerRegistryFactory(
-                    new KafkaMessagingGatewayConfiguration
-                    {
-                        Name = applicationName,
-                        BootStrapServers = new[] { configuration["Messaging:Kafka"] },
-                        SecurityProtocol = SecurityProtocol.Plaintext,
-                        SaslMechanisms = SaslMechanism.Plain
-                    },
-                    (messageTopics ?? []).Select(topic => new KafkaPublication
-                    {
-                        Topic = new RoutingKey(topic),
-                        NumPartitions = 3,
-                        ReplicationFactor = 3,
-                        MessageTimeoutMs = 1000,
-                        RequestTimeoutMs = 1000,
-                        MakeChannels = OnMissingChannel.Create
-                    })
-                )
-                .Create())
-            .AutoFromAssemblies(mapperAssemblies)
-            .AsyncHandlersFromAssemblies();
+        var brighter = services.AddBrighter(options =>
+        {
+            options.InstrumentationOptions = InstrumentationOptions.All;
+        });
+
+        if (messageTopics is null || !messageTopics.Any()) return services;
+
+        brighter.AddProducers(options =>
+            {
+                options.MaxOutStandingMessages = 5;
+                options.MaxOutStandingCheckInterval = TimeSpan.FromMilliseconds(500);
+                options.InstrumentationOptions = InstrumentationOptions.All;
+                options.Outbox = new InMemoryOutbox(TimeProvider.System, InstrumentationOptions.All);
+                options.ProducerRegistry =
+                    GetKafkaProducerRegistry(configuration, applicationName, messageTopics ?? []);
+            })
+            .AutoFromAssemblies(mapperAssemblies);
 
         return services;
+    }
+
+    private static IAmAProducerRegistry GetKafkaProducerRegistry(IConfiguration configuration, string applicationName,
+        List<PublicEvent> messageTopics)
+    {
+        var producerRegistry = new KafkaProducerRegistryFactory(
+            new KafkaMessagingGatewayConfiguration
+            {
+                Name = applicationName,
+                BootStrapServers = new[] { configuration["Messaging:Kafka"] },
+                SecurityProtocol = SecurityProtocol.Plaintext,
+                SaslMechanisms = SaslMechanism.Plain
+            },
+            messageTopics.Select(topic =>
+                new KafkaPublication
+                {
+                    DataSchema = null,
+                    Topic = new RoutingKey(topic.EventName),
+                    RequestType = topic.GetType(),
+                    EnableIdempotence = true,
+                    NumPartitions = 3,
+                    Partitioner = Partitioner.Random,
+                    ReplicationFactor = 3,
+                    MessageTimeoutMs = 1000,
+                    RequestTimeoutMs = 1000,
+                    MakeChannels = OnMissingChannel.Create
+                })).Create();
+
+        return producerRegistry;
     }
 }

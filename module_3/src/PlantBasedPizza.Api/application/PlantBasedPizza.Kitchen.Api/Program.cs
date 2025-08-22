@@ -36,16 +36,17 @@ var applicationName = "kitchen-service";
 builder.Services
     .AddKitchenInfrastructure(builder.Configuration, overrideConnectionString)
     .AddSharedInfrastructure(builder.Configuration, applicationName)
-    .AddMessageProducers(builder.Configuration, applicationName, new List<string>(1)
+    .AddMessageProducers(builder.Configuration, applicationName, new List<PublicEvent>(1)
     {
-        OrderPreparingEventV1.EventTypeName,
-        OrderPreparingEventV1.EventTypeName,
-        OrderCompletedEventV1.EventTypeName,
-        OrderQualityCheckedEventV1.EventTypeName
+        new OrderPreparingEventV1(""),
+        new OrderPrepCompleteEventV1(""),
+        new OrderBakedEventV1(""),
+        new OrderQualityCheckedEventV1("")
     })
     .AddMessageConsumers(builder.Configuration, applicationName, new[]
     {
-        new EventSubscription<OrderSubmittedEventV1>(applicationName, "kitchen.orderSubmitted", OrderSubmittedEventV1.EventTypeName)
+        new EventSubscription<OrderSubmittedEventV1>(applicationName, "kitchen.orderSubmitted",
+            OrderSubmittedEventV1.EventTypeName)
     })
     .AddHttpClient();
 

@@ -8,7 +8,7 @@ using Paramore.Brighter;
 namespace PlantBasedPizza.OrderManager.DataTransfer;
 
 public class OrderCreatedMessageMapper: IAmAMessageMapper<OrderCreatedEventV1> {
-    public Message MapToMessage(OrderCreatedEventV1 request)
+    public Message MapToMessage(OrderCreatedEventV1 request, Publication publication)
     {
         var header = new MessageHeader(messageId: request.Id, topic: request.EventName, messageType: MessageType.MT_EVENT);
         var body = new MessageBody(request.AsString());
@@ -20,4 +20,6 @@ public class OrderCreatedMessageMapper: IAmAMessageMapper<OrderCreatedEventV1> {
     {
         return JsonSerializer.Deserialize<OrderCreatedEventV1>(message.Body.Value);
     }
+
+    public IRequestContext? Context { get; set; }
 }

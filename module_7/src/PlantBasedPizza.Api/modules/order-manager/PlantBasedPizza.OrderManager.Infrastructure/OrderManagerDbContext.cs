@@ -1,0 +1,62 @@
+
+
+
+
+using Microsoft.EntityFrameworkCore;
+using PlantBasedPizza.OrderManager.Core;
+
+namespace PlantBasedPizza.OrderManager.Infrastructure;
+
+public class OrderManagerDbContext : DbContext
+{
+    public OrderManagerDbContext(DbContextOptions<OrderManagerDbContext> options) : base(options)
+    {
+    }
+
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OutboxItem> OutboxItems { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Order>()
+            .HasKey(o => o.OrderIdentifier);
+    
+        modelBuilder.Entity<Order>()
+            .ToTable("orders");
+    
+        // Configure OrderItems collection relationship
+        modelBuilder.Entity<Order>()
+            .HasMany(o => o.Items)
+            .WithOne()
+            .HasForeignKey("OrderIdentifier")
+            .OnDelete(DeleteBehavior.Cascade);
+    
+        // Configure OrderHistory collection relationship
+        modelBuilder.Entity<Order>()
+            .HasMany(o => o.History)
+            .WithOne()
+            .HasForeignKey("OrderIdentifier")
+            .OnDelete(DeleteBehavior.Cascade);
+    
+        // Configure DeliveryDetails relationship (if it's a navigation property)
+        modelBuilder.Entity<Order>()
+            .HasOne(o => o.DeliveryDetails)
+            .WithOne()
+            .HasForeignKey<DeliveryDetails>("OrderIdentifier");
+    
+        modelBuilder.Entity<DeliveryDetails>()
+            .HasKey(o => o.DeliveryDetailsId);
+    
+        modelBuilder.Entity<OrderItem>()
+            .HasKey(o => o.OrderItemId);
+    
+        modelBuilder.Entity<OrderHistory>()
+            .HasKey(o => o.OrderHistoryId);
+        
+        modelBuilder.Entity<OutboxItem>()
+            .HasKey(o => o.ItemId);
+        
+        modelBuilder.Entity<OutboxItem>()
+            .ToTable("orders_outboxitems");
+    }
+}

@@ -12,21 +12,21 @@ public class KitchenDomainService(IKitchenRequestRepository kitchenRequestReposi
 
     public async Task<List<KitchenRequestDTO>> GetPreparingRequestAsync()
     {
-        var queryResults = await kitchenRequestRepository.GetNew();
+        var queryResults = await kitchenRequestRepository.GetPrep();
 
         return queryResults.Select(p => new KitchenRequestDTO(p)).ToList();
     }
 
     public async Task<List<KitchenRequestDTO>> GetBakingAsync()
     {
-        var queryResults = await kitchenRequestRepository.GetNew();
+        var queryResults = await kitchenRequestRepository.GetBaking();
 
         return queryResults.Select(p => new KitchenRequestDTO(p)).ToList();
     }
 
     public async Task<List<KitchenRequestDTO>> GetAwaitingQualityCheckAsync()
     {
-        var queryResults = await kitchenRequestRepository.GetNew();
+        var queryResults = await kitchenRequestRepository.GetAwaitingQualityCheck();
 
         return queryResults.Select(p => new KitchenRequestDTO(p)).ToList();
     }

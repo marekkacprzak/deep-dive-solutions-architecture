@@ -16,7 +16,7 @@ public class OrderQualityCheckedKafkaEventHandler(
     IAmACommandProcessor processor) : RequestHandlerAsync<OrderQualityCheckedEventV1>
 {
     [Channel("kitchen.quality-checked")] // Creates a Channel
-    [SubscribeOperation(typeof(OrderQualityCheckedEvent), Summary = "Handle an order quality event.",
+    [SubscribeOperation(typeof(OrderQualityCheckedEventV1), Summary = "Handle an order quality event.",
         OperationId = "kitchen.quality-checked")]
     [RequestLoggingAsync(1, HandlerTiming.Before)]
     // [UseResiliencePipeline(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]

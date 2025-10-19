@@ -1,6 +1,11 @@
+using System.Reflection;
 using System.Threading.RateLimiting;
+using Paramore.Brighter;
+using PlantBasedPizza.Delivery.DataTransfer;
+using PlantBasedPizza.Kitchen.DataTransfer;
 using PlantBasedPizza.OrderManager.Infrastructure;
 using PlantBasedPizza.Payment.Infrastructure;
+using PlantBasedPizza.Recipes.DataTransfer;
 using PlantBasedPizza.Shared;
 using PlantBasedPizza.Shared.Events;
 using Serilog;
@@ -33,6 +38,23 @@ builder.Services.AddOrderManagerInfrastructure(builder.Configuration, overrideCo
     .AddPaymentInfrastructure()
     .AddSharedInfrastructure(builder.Configuration, applicationName)
     .AddMessageProducers(builder.Configuration, applicationName, new List<PublicEvent>())
+    .AddMessageConsumers(builder.Configuration, applicationName, new Subscription[7]
+    {
+        new EventSubscription<DriverCollectedOrderEventV1>(applicationName, "delivery.driver-collected",
+            DriverCollectedOrderEventV1.EventTypeName),
+        new EventSubscription<OrderBakedEventV1>(applicationName, "kitchen.baked",
+            OrderBakedEventV1.EventTypeName),
+        new EventSubscription<OrderDeliveredEventV1>(applicationName, "delivery.order-delivered",
+            OrderDeliveredEventV1.EventTypeName),
+        new EventSubscription<OrderPreparingEventV1>(applicationName, "kitchen.prep-started",
+            OrderPreparingEventV1.EventTypeName),
+        new EventSubscription<OrderPrepCompleteEventV1>(applicationName, "kitchen.prep-complete",
+            OrderPrepCompleteEventV1.EventTypeName),
+        new EventSubscription<OrderQualityCheckedEventV1>(applicationName, "kitchen.quality-checked",
+            OrderQualityCheckedEventV1.EventTypeName),
+        new EventSubscription<RecipeCreatedEventV1>(applicationName, "recipe.recipe-created",
+            RecipeCreatedEventV1.EventTypeName),
+    })
     .AddHttpClient();
 
 builder.Services.AddRateLimiter(options =>

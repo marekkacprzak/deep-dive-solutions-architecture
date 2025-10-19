@@ -1,7 +1,3 @@
-
-
-
-
 using Microsoft.Extensions.DependencyInjection;
 using Paramore.Brighter;
 using Paramore.Brighter.Logging.Attributes;
@@ -18,7 +14,7 @@ namespace PlantBasedPizza.OrderManager.Infrastructure.PublicEventHandlers;
 public class OrderPreparingKafkaEventHandler(IServiceScopeFactory serviceScopeFactory, IAmACommandProcessor processor) : RequestHandlerAsync<OrderPreparingEventV1>
 {
     [Channel("kitchen.prep-started")] // Creates a Channel
-    [SubscribeOperation(typeof(OrderPreparingEvent), Summary = "Handle an order prep started event.",
+    [SubscribeOperation(typeof(OrderPreparingEventV1), Summary = "Handle an order prep started event.",
         OperationId = "kitchen.prep-started")]
     [RequestLoggingAsync(step: 1, timing: HandlerTiming.Before)]
     // [UseResiliencePipeline(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]

@@ -46,12 +46,14 @@ builder.Services
         new OrderBakedEventV1(""),
         new OrderQualityCheckedEventV1("")
     }, Assembly.Load("PlantBasedPizza.Kitchen.DataTransfer"))
-    .AddMessageConsumers(builder.Configuration, applicationName, new Subscription[2]
+    .AddMessageConsumers(builder.Configuration, applicationName, new Subscription[3]
     {
-        new EventSubscription<OrderSubmittedEventV1>(applicationName, "kitchen.orderSubmitted",
+        new EventSubscription<OrderSubmittedEventV1>(applicationName, "order-manager.order-submitted",
             OrderSubmittedEventV1.EventTypeName),
         new EventSubscription<RecipeCreatedEventV1>(applicationName, "kitchen.recipeCreated",
             RecipeCreatedEventV1.EventTypeName),
+        new EventSubscription<OrderBakedEventV1>(applicationName, "kitchen.order-baked",
+            OrderBakedEventV1.EventTypeName)
     })
     .AddHttpClient();
 

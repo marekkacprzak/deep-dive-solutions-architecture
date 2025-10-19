@@ -38,11 +38,12 @@ var overrideConnectionString = Environment.GetEnvironmentVariable("OVERRIDE_CONN
 var applicationName = "PlantBasedPizza-Order.Worker";
 
 builder.Services
-    .AddMessageProducers(builder.Configuration, applicationName, new List<PublicEvent>(3)
+    .AddMessageProducers(builder.Configuration, applicationName, new List<PublicEvent>(4)
     {
         new OrderCreatedEventV1(""),
         new OrderSubmittedEventV1(""),
-        new OrderCompletedEventV1("")
+        new OrderCompletedEventV1(""),
+        new OrderReadyForDeliveryEventV1("", "", "", "", "", "", "")
     }, Assembly.Load("PlantBasedPizza.OrderManager.DataTransfer"))
     .AddMessageConsumers(builder.Configuration, applicationName, new Subscription[7]
     {
@@ -60,7 +61,10 @@ builder.Services
             OrderDeliveredEventV1.EventTypeName),
         new EventSubscription<RecipeCreatedEventV1>(applicationName, "order.orderDelivered",
             RecipeCreatedEventV1.EventTypeName),
-    })
+    }, 
+    Assembly.Load("PlantBasedPizza.Kitchen.DataTransfer"),
+    Assembly.Load("PlantBasedPizza.Delivery.DataTransfer"),
+    Assembly.Load("PlantBasedPizza.Recipes.DataTransfer"))
     .AddOrderManagerInfrastructure(builder.Configuration, overrideConnectionString)
     .AddPaymentInfrastructure()
     .AddSharedInfrastructure(builder.Configuration, applicationName)

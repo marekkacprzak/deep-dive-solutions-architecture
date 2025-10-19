@@ -1,5 +1,6 @@
 using Confluent.Kafka;
 using Confluent.Kafka.Admin;
+using System.Xml.Linq;
 
 namespace PlantBasedPizza.Aspire;
 
@@ -128,6 +129,12 @@ public static class ApplicationBuilderExtensions
             .WithReference(recipeApplication)
             .WithReference(deliveryApplication);
 
+        builder.Eventing.Subscribe<ResourceReadyEvent>(yarpProxy.Resource, async (@event, ct) =>
+        {
+            await yarpProxy.UpdateTestEndpoint();
+        });
+
         return builder;
     }
+
 }

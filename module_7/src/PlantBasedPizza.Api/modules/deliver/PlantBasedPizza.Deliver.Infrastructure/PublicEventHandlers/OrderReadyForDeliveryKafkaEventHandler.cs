@@ -1,7 +1,3 @@
-
-
-
-
 using Microsoft.Extensions.DependencyInjection;
 using Paramore.Brighter;
 using Paramore.Brighter.Logging.Attributes;
@@ -20,7 +16,7 @@ public class OrderReadyForDeliveryKafkaEventHandler(IServiceScopeFactory service
     : RequestHandlerAsync<OrderReadyForDeliveryEventV1>
 {
     [Channel("order-manager.ready-for-delivery")] // Creates a Channel
-    [SubscribeOperation(typeof(OrderReadyForDeliveryEvent), Summary = "Handle an order ready for delivery event.", OperationId = "order-manager.ready-for-delivery")]
+    [SubscribeOperation(typeof(OrderReadyForDeliveryEventV1), Summary = "Handle an order ready for delivery event.", OperationId = "order-manager.ready-for-delivery")]
     [RequestLoggingAsync(step: 1, timing: HandlerTiming.Before)]
     // [UseResiliencePipeline(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]
     public override async Task<OrderReadyForDeliveryEventV1> HandleAsync(OrderReadyForDeliveryEventV1 command,

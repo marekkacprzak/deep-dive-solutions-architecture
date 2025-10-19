@@ -21,6 +21,7 @@ public class DLQMessage : PublicEvent
     public override string EventName => eventName;
     public override string EventVersion { get; }
     public string Data { get; set; }
+    [JsonIgnore]
     public Activity Span { get; set; }
     public override string AsString()
     {
@@ -43,9 +44,10 @@ public class DLQMessageMapper : IAmAMessageMapper<DLQMessage>
 
     public DLQMessage MapToRequest(Message message)
     {
-        var evt = JsonSerializer.Deserialize<DLQMessage>(message.Body.Value);
-
-        return evt;
+        var topic = message.Header.Topic; // zależnie od implementacji nagłówka
+        var eventName = topic?.Value?.Replace(".deadletter", "");
+        var dlq = new DLQMessage(eventName ?? message.Header.Topic) { Data = message.Body.Value, Id = message.Id };
+        return dlq;
     }
 
     public IRequestContext? Context { get; set; }

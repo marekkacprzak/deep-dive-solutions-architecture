@@ -11,5 +11,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\..\shared\PlantBasedPizza.Shared\PlantBasedPizza.Shared.csproj" />
+      <ProjectReference Include="..\..\order-manager\PlantBasedPizza.OrderManager.DataTransfer\PlantBasedPizza.OrderManager.DataTransfer.csproj" />
     </ItemGroup>
 </Project>

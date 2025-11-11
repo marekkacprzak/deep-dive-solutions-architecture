@@ -7,39 +7,39 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CloudNative.CloudEvents" Version="2.8.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.9" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
-    <PackageReference Include="MongoDB.Driver" Version="3.4.2" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.12.0-beta.2" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.12.0-beta.2" />
-    <PackageReference Include="Paramore.Brighter" Version="10.0.1" />
-    <PackageReference Include="Paramore.Brighter.Extensions.DependencyInjection" Version="10.0.1" />
-    <PackageReference Include="Paramore.Brighter.Inbox.Postgres" Version="10.0.1" />
-    <PackageReference Include="Paramore.Brighter.MessagingGateway.Kafka" Version="10.0.1" />
-    <PackageReference Include="Paramore.Brighter.ServiceActivator" Version="10.0.1" />
-    <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.DependencyInjection" Version="10.0.1" />
-    <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.Hosting" Version="10.0.1" />
-    <PackageReference Include="Paramore.Darker" Version="4.1.1" />
-    <PackageReference Include="Paramore.Darker.Policies" Version="4.1.1" />
-    <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
-    <PackageReference Include="Polly.Extensions" Version="8.6.2" />
-    <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
-    <PackageReference Include="Serilog" Version="4.3.0" />
-    <PackageReference Include="Serilog.Enrichers.CorrelationId" Version="3.0.1" />
-    <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageReference Include="serilog.aspnetcore" Version="9.0.0" />
-    <PackageReference Include="serilog.expressions" Version="5.0.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageReference Include="serilog.sinks.seq" Version="9.0.0" />
-    <PackageReference Include="OpenTelemetry" Version="1.12.0" />
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.12.0" />
-    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.12.0" />
-    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.12.0" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.12.0" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.12.0" />
+    <PackageReference Include="CloudNative.CloudEvents" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="MongoDB.Driver" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" />
+    <PackageReference Include="Paramore.Brighter" />
+    <PackageReference Include="Paramore.Brighter.Extensions.DependencyInjection" />
+    <PackageReference Include="Paramore.Brighter.Inbox.Postgres" />
+    <PackageReference Include="Paramore.Brighter.MessagingGateway.Kafka" />
+    <PackageReference Include="Paramore.Brighter.ServiceActivator" />
+    <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.DependencyInjection" />
+    <PackageReference Include="Paramore.Brighter.ServiceActivator.Extensions.Hosting" />
+    <PackageReference Include="Paramore.Darker" />
+    <PackageReference Include="Paramore.Darker.Policies" />
+    <PackageReference Include="Polly.Contrib.WaitAndRetry" />
+    <PackageReference Include="Polly.Extensions" />
+    <PackageReference Include="Polly.Extensions.Http" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Enrichers.CorrelationId" />
+    <PackageReference Include="Serilog.Formatting.Compact" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="serilog.aspnetcore" />
+    <PackageReference Include="serilog.expressions" />
+    <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="serilog.sinks.seq" />
+    <PackageReference Include="OpenTelemetry" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
   </ItemGroup>
 
 </Project>

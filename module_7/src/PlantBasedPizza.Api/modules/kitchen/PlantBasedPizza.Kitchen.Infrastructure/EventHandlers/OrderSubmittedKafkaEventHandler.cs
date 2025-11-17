@@ -48,7 +48,7 @@ public class OrderSubmittedKafkaEventHandler(
     [SubscribeOperation(typeof(OrderSubmittedEventV1), Summary = "Handle an order submitted event.",
         OperationId = "order-manager.order-submitted")]
     [RequestLoggingAsync(1, HandlerTiming.Before)]
-    //[UseResiliencePipeline(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]
+    //[UseResiliencePipelineAsync(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]
     public override async Task<OrderSubmittedEventV1> HandleAsync(OrderSubmittedEventV1 command,
         CancellationToken cancellationToken = new())
     {

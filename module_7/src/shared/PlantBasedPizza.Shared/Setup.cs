@@ -75,8 +75,6 @@ public static class Setup
             SaslMechanisms = SaslMechanism.Plain
         });
 
-        var requestTypes = GetRequestTypes(mapperAssemblies);
-
         services.AddConsumers(options =>
             {
                 options.InboxConfiguration = new InboxConfiguration(
@@ -85,7 +83,7 @@ public static class Setup
                 options.DefaultChannelFactory = new ChannelFactory(consumerFactory);
                 options.ResiliencePipelineRegistry = new ResiliencePipelineRegistry<string>()
                     .AddBrighterDefault()
-                    .AddDefaultRetries(requestTypes);
+                    .AddDefaultRetries();
                 options.InstrumentationOptions = InstrumentationOptions.All;
                 options.Subscriptions = subscriptions;
             })
@@ -114,14 +112,12 @@ public static class Setup
         IConfiguration configuration, string applicationName, List<PublicEvent>? messageTopics,
         params Assembly[] mapperAssemblies)
     {
-        var requestTypes = GetRequestTypes(mapperAssemblies);
-
         var brighter = services.AddBrighter(options =>
         {
             options.InstrumentationOptions = InstrumentationOptions.All;
             options.ResiliencePipelineRegistry = new ResiliencePipelineRegistry<string>()
                 .AddBrighterDefault()
-                .AddDefaultRetries(requestTypes);
+                .AddDefaultRetries();
         });
 
         if (messageTopics is null || !messageTopics.Any()) return services;
@@ -141,6 +137,8 @@ public static class Setup
         return services;
     }
 
+<<<<<<< HEAD
+=======
     private static IEnumerable<Type> GetRequestTypes(Assembly[] assemblies)
     {
         var types = assemblies.SelectMany(a => a.GetTypes())
@@ -151,6 +149,7 @@ public static class Setup
         return types;
     }
 
+>>>>>>> b9a78cd3ddf44a35f1e2568afd20f515f9c35d22
     private static IAmAProducerRegistry GetKafkaProducerRegistry(IConfiguration configuration, string applicationName,
         List<PublicEvent> messageTopics)
     {

@@ -66,6 +66,7 @@ builder.Services
         new EventSubscription<RecipeCreatedEventV1>(applicationName, "order.orderDelivered",
             RecipeCreatedEventV1.EventTypeName),
     }, 
+    Assembly.Load("PlantBasedPizza.OrderManager.DataTransfer"),
     Assembly.Load("PlantBasedPizza.Kitchen.DataTransfer"),
     Assembly.Load("PlantBasedPizza.Delivery.DataTransfer"),
     Assembly.Load("PlantBasedPizza.Recipes.DataTransfer"))

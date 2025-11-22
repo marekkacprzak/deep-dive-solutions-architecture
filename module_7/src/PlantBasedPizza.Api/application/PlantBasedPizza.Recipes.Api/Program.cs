@@ -38,7 +38,7 @@ builder.Services.AddRecipeInfrastructure(builder.Configuration, logger, override
     .AddMessageProducers(builder.Configuration, applicationName, new List<PublicEvent>(1)
     {
         new RecipeCreatedEventV1("", "", 0),
-    }, Assembly.Load("PlantBasedPizza.Recipes.DataTransfer"))
+    }, typeof(RecipeCreatedEventV1).Assembly)
     .AddHttpClient();
 
 builder.Services.AddRateLimiter(options =>

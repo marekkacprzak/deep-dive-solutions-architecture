@@ -165,9 +165,9 @@ public class Order
         AddHistory("Sending for delivery");
 
         AddIntegrationEvent(new OrderReadyForDeliveryEvent(OrderIdentifier,
-            DeliveryDetails.AddressLine1, DeliveryDetails.AddressLine2,
-            DeliveryDetails.AddressLine3, DeliveryDetails.AddressLine4,
-            DeliveryDetails.AddressLine5, DeliveryDetails.Postcode));
+            DeliveryDetails?.AddressLine1, DeliveryDetails?.AddressLine2,
+            DeliveryDetails?.AddressLine3, DeliveryDetails?.AddressLine4,
+            DeliveryDetails?.AddressLine5, DeliveryDetails?.Postcode));
     }
 
     public void MarkAsAwaitingCollection()

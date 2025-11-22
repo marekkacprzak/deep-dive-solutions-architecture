@@ -2,9 +2,9 @@ namespace PlantBasedPizza.FitnessFunctions.ViewModels
 {
     public class KitchenRequest
     {
-        public string KitchenRequestId { get; set; }
+        public string? KitchenRequestId { get; set; }
         
-        public string OrderIdentifier { get; set; }
+        public string? OrderIdentifier { get; set; }
         
         public DateTime OrderReceivedOn { get; set; }
         

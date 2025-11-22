@@ -25,7 +25,7 @@ public class RecipeTests
         
         recipeList.Should().NotBeNull();
         recipeList.Should().HaveCount(2);
-        recipeList[0].RecipeIdentifier.Should().Be("CREATEORDERTEST");
+        recipeList![0].RecipeIdentifier.Should().Be("CREATEORDERTEST");
         recipeList[0].Ingredients.Should().HaveCount(1);
         recipeList[0].Ingredients[0].Name.Should().Be("Pizza");
 

@@ -5,9 +5,9 @@ namespace PlantBasedPizza.FitnessFunctions.ViewModels
     public class AssignDriverRequest
     {
         [JsonPropertyName("orderIdentifier")]
-        public string OrderIdentifier { get; set; }
+        public string? OrderIdentifier { get; set; }
         
         [JsonPropertyName("driverName")]
-        public string DriverName { get; set; }
+        public string? DriverName { get; set; }
     }
 }

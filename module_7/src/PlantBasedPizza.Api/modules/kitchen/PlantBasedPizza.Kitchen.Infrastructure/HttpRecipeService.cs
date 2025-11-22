@@ -26,7 +26,7 @@ namespace PlantBasedPizza.Kitchen.Infrastructure
             if (!string.IsNullOrEmpty(cachedRecipe))
             {
                 getRecipeActivity?.SetTag("cache.hit", "true");
-                return JsonSerializer.Deserialize<RecipeAdapter>(cachedRecipe, _jsonSerializerOptions);
+                return JsonSerializer.Deserialize<RecipeAdapter>(cachedRecipe, _jsonSerializerOptions)!;
             }
             
             getRecipeActivity?.SetTag("cache.hit", "false");
@@ -40,7 +40,7 @@ namespace PlantBasedPizza.Kitchen.Infrastructure
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
                 });
 
-            return JsonSerializer.Deserialize<RecipeAdapter>(await recipe.Content.ReadAsStringAsync(), _jsonSerializerOptions);
+            return JsonSerializer.Deserialize<RecipeAdapter>(await recipe.Content.ReadAsStringAsync(), _jsonSerializerOptions)!;
         }
     }
 }

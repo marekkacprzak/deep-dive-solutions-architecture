@@ -94,7 +94,7 @@ namespace PlantBasedPizza.FitnessFunctions.Drivers
 
             var order = JsonSerializer.Deserialize<Order>(await result.Content.ReadAsStringAsync(),_jsonSerializerOptions);
 
-            return order;
+            return order!;
         }
 
         private async Task checkRecipeExists(string recipeIdentifier)

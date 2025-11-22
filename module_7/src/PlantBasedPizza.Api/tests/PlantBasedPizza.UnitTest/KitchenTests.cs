@@ -17,7 +17,7 @@ namespace PlantBasedPizza.UnitTest
         {
             var request = new KitchenRequestBuilder().AddRecipe("Pizza").Build();
 
-            request.Recipes.Count.Should().Be(1);
+            request!.Recipes.Count.Should().Be(1);
             request.OrderIdentifier.Should().Be(OrderIdentifier);
             request.OrderState.Should().Be(OrderState.NEW);
             request.BakeCompleteOn.Should().BeNull();
@@ -44,7 +44,7 @@ namespace PlantBasedPizza.UnitTest
         {
             var request = new KitchenRequestBuilder().AddRecipe("Pizza").Build();
             
-            request.StartPreparing();
+            request!.StartPreparing();
             request.CompletePreparing();
 
             request.PrepCompleteOn.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
@@ -55,7 +55,7 @@ namespace PlantBasedPizza.UnitTest
         {
             var request = new KitchenRequestBuilder().AddRecipe("Pizza").Build();
             
-            request.StartPreparing();
+            request!.StartPreparing();
             request.CompletePreparing();
             request.CompleteBaking();
 
@@ -67,7 +67,7 @@ namespace PlantBasedPizza.UnitTest
         {
             var request = new KitchenRequestBuilder().AddRecipe("Pizza").Build();
             
-            request.StartPreparing();
+            request!.StartPreparing();
             request.CompletePreparing();
             request.CompleteBaking();
             request.CompleteQualityCheck();

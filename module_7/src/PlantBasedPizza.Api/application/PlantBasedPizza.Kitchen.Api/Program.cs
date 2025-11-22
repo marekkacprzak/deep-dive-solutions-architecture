@@ -89,7 +89,7 @@ var app = builder.Build();
 app.UseCors("AllowAll");
 
 var serviceScopeFactory = app.Services.GetService<IServiceScopeFactory>();
-using (var scope = serviceScopeFactory.CreateScope())
+using (var scope = serviceScopeFactory!.CreateScope())
 {
     var kitchenDbContext = scope.ServiceProvider.GetRequiredService<KitchenDbContext>();
     await kitchenDbContext.Database.MigrateAsync();

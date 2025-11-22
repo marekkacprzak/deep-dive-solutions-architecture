@@ -2,9 +2,9 @@ namespace PlantBasedPizza.FitnessFunctions.ViewModels
 {
     public class Order
     {
-        public string OrderIdentifier { get; set; }
+        public string? OrderIdentifier { get; set; }
         
-        public string OrderNumber { get; set; }
+        public string? OrderNumber { get; set; }
 
         public DateTime OrderDate { get; set; }
 
@@ -12,13 +12,13 @@ namespace PlantBasedPizza.FitnessFunctions.ViewModels
 
         public DateTime? OrderCompletedOn { get; set; }
 
-        public List<OrderItem> Items { get; set; }
+        public List<OrderItem>? Items { get; set; }
 
-        public List<OrderHistory> History { get; set; }
+        public List<OrderHistory>? History { get; set; }
 
         public int OrderType { get; set; }
 
-        public string CustomerIdentifier { get; set; }
+        public string? CustomerIdentifier { get; set; }
 
         public decimal TotalPrice { get; set; }
         

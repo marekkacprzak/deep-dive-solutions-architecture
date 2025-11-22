@@ -81,7 +81,7 @@ public class OrderManagerTests
 
         // Assert
         order.Items.Count.Should().Be(2);
-        order.Items.FirstOrDefault(p => p.RecipeIdentifier == recipeId).Quantity.Should().Be(4);
+        order.Items.FirstOrDefault(p => p.RecipeIdentifier == recipeId)!.Quantity.Should().Be(4);
         order.TotalPrice.Should().Be(43);
     }
     
@@ -106,7 +106,7 @@ public class OrderManagerTests
 
         // Assert
         order.Items.Count.Should().Be(2);
-        order.Items.FirstOrDefault(p => p.RecipeIdentifier == recipeId).Quantity.Should().Be(2);
+        order.Items.FirstOrDefault(p => p.RecipeIdentifier == recipeId)!.Quantity.Should().Be(2);
         order.TotalPrice.Should().Be(23);
     }
     
@@ -131,7 +131,7 @@ public class OrderManagerTests
         order.OrderNumber.Should().NotBeNullOrEmpty();
         order.OrderDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
         order.OrderType.Should().Be(OrderType.Delivery);
-        order.DeliveryDetails.AddressLine1.Should().Be("TEST");
+        order.DeliveryDetails!.AddressLine1.Should().Be("TEST");
     }
     
     [Fact]
@@ -213,7 +213,7 @@ public class OrderManagerTests
         order.AddOrderItem("PIZZA", "Pizza 1", 1, 10);
 
         // Assert
-        order.Items.FirstOrDefault().Quantity.Should().Be(1);
+        order.Items.FirstOrDefault()!.Quantity.Should().Be(1);
     }
     
     [Fact]

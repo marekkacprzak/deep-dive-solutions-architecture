@@ -37,7 +37,7 @@ public class KitchenDomainService(IKitchenRequestRepository kitchenRequestReposi
         
         var request = await kitchenRequestRepository.Retrieve(orderIdentifier);
 
-        request.StartPreparing();
+        request!.StartPreparing();
         
         await kitchenRequestRepository.Update(request);
         

@@ -80,7 +80,7 @@ builder.Services.AddHostedService<OrderOutboxWorker>();
 var app = builder.Build();
 
 var serviceScopeFactory = app.Services.GetService<IServiceScopeFactory>();
-using (var scope = serviceScopeFactory.CreateScope())
+using (var scope = serviceScopeFactory!.CreateScope())
 {
     var ordersDbContext = scope.ServiceProvider.GetRequiredService<OrderManagerDbContext>();
     await ordersDbContext.Database.MigrateAsync();

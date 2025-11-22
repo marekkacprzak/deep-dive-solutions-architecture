@@ -8,6 +8,11 @@ using PlantBasedPizza.Shared.Events;
 
 namespace PlantBasedPizza.Worker;
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="logger"></param>
+/// <param name="scopeFactory"></param>
 public class OrderOutboxWorker(ILogger<OrderOutboxWorker> logger, IServiceScopeFactory scopeFactory)
     : BackgroundService
 {
@@ -17,6 +22,10 @@ public class OrderOutboxWorker(ILogger<OrderOutboxWorker> logger, IServiceScopeF
         PropertyNameCaseInsensitive = true
     };
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="stoppingToken"></param>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var scope = scopeFactory.CreateScope();
@@ -45,20 +54,20 @@ public class OrderOutboxWorker(ILogger<OrderOutboxWorker> logger, IServiceScopeF
                             await domainEventDispatcher.PublishAsync(orderCreatedEvent);
                             
                             // Publish the public event externally
-                            await eventPublisher.Publish(new OrderCreatedEventV1(orderCreatedEvent.OrderIdentifier));
+                            await eventPublisher.Publish(new OrderCreatedEventV1(orderCreatedEvent!.OrderIdentifier));
                             outboxItem.Processed = true;
                             break;
                         case nameof(OrderSubmittedEvent):
                             var orderSubmittedEvent = JsonSerializer.Deserialize<OrderSubmittedEvent>(outboxItem.EventData, _jsonSerializerOptions);
                             await domainEventDispatcher.PublishAsync(orderSubmittedEvent);
-                            await eventPublisher.Publish(new OrderSubmittedEventV1(orderSubmittedEvent.OrderIdentifier));
+                            await eventPublisher.Publish(new OrderSubmittedEventV1(orderSubmittedEvent!.OrderIdentifier));
                             outboxItem.Processed = true;
                             break;
                         case nameof(OrderReadyForDeliveryEvent):
                             var orderReadyForDeliveryEvent = JsonSerializer.Deserialize<OrderReadyForDeliveryEvent>(outboxItem.EventData, _jsonSerializerOptions);
                             await domainEventDispatcher.PublishAsync(orderReadyForDeliveryEvent);
                             await eventPublisher.Publish(new OrderReadyForDeliveryEventV1(
-                                orderReadyForDeliveryEvent.OrderIdentifier,
+                                orderReadyForDeliveryEvent!.OrderIdentifier,
                                 orderReadyForDeliveryEvent.DeliveryAddressLine1,
                                 orderReadyForDeliveryEvent.DeliveryAddressLine2,
                                 orderReadyForDeliveryEvent.DeliveryAddressLine3,
@@ -70,7 +79,7 @@ public class OrderOutboxWorker(ILogger<OrderOutboxWorker> logger, IServiceScopeF
                         case nameof(OrderCompletedEvent):
                             var orderCompletedEvent = JsonSerializer.Deserialize<OrderCompletedEvent>(outboxItem.EventData, _jsonSerializerOptions);
                             await domainEventDispatcher.PublishAsync(orderCompletedEvent);
-                            await eventPublisher.Publish(new OrderCompletedEventV1(orderCompletedEvent.OrderIdentifier));
+                            await eventPublisher.Publish(new OrderCompletedEventV1(orderCompletedEvent!.OrderIdentifier));
                             outboxItem.Processed = true;
                             break;
                         default:
@@ -91,7 +100,7 @@ public class OrderOutboxWorker(ILogger<OrderOutboxWorker> logger, IServiceScopeF
                 try
                 {
                     var item = await dbContext.OutboxItems.FindAsync(outboxItem.ItemId);
-                    item.Failed = outboxItem.Failed;
+                    item!.Failed = outboxItem.Failed;
                     item.Processed = outboxItem.Processed;
                     item.FailureReason = outboxItem.FailureReason;
                     dbContext.OutboxItems.Update(item);

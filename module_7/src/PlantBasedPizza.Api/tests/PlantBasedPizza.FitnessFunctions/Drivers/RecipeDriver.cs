@@ -5,7 +5,7 @@ namespace PlantBasedPizza.FitnessFunctions.Drivers
 {
     public class RecipeDriver
     {
-        private static string BaseUrl = TestConstants.DefaultTestUrl;
+        private static string _baseUrl = TestConstants.DefaultTestUrl;
 
         private readonly HttpClient _httpClient;
 
@@ -16,11 +16,11 @@ namespace PlantBasedPizza.FitnessFunctions.Drivers
         
         public async Task<List<Recipe>> All()
         {
-            var result = await this._httpClient.GetAsync(new Uri($"{BaseUrl}/recipes")).ConfigureAwait(false);
+            var result = await this._httpClient.GetAsync(new Uri($"{_baseUrl}/recipes")).ConfigureAwait(false);
 
             var recipes = JsonSerializer.Deserialize<List<Recipe>>(await result.Content.ReadAsStringAsync());
 
-            return recipes;
+            return recipes!;
         }
     }
 }

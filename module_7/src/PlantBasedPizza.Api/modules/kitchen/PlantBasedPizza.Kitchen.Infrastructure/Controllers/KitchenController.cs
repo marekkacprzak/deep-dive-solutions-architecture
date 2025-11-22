@@ -9,7 +9,6 @@ namespace PlantBasedPizza.Kitchen.Infrastructure.Controllers
     [Route("kitchen")]
     public class KitchenController(
         IKitchenDomainService domainService,
-        IDomainEventDispatcher domainEventDispatcher,
         ILogger<KitchenController> logger)
         : ControllerBase
     {

@@ -47,7 +47,7 @@ public class KitchenRequestRepositoryPostgres : IKitchenRequestRepository
             
             await _eventPublisher.ClearOutbox();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             await transaction.RollbackAsync();
 
@@ -90,7 +90,7 @@ public class KitchenRequestRepositoryPostgres : IKitchenRequestRepository
             
             await _eventPublisher.ClearOutbox();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             await transaction.RollbackAsync();
 
@@ -100,7 +100,7 @@ public class KitchenRequestRepositoryPostgres : IKitchenRequestRepository
         await transaction.CommitAsync();
     }
 
-    public async Task<KitchenRequest> Retrieve(string orderIdentifier)
+    public async Task<KitchenRequest?> Retrieve(string orderIdentifier)
     {
         return await _context.KitchenRequests
             .Include(k => k.Recipes)

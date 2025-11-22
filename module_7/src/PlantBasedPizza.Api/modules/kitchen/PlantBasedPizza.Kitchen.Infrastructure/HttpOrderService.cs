@@ -32,7 +32,7 @@ namespace PlantBasedPizza.Kitchen.Infrastructure
             if (!string.IsNullOrEmpty(orderFromCache))
             {
                 getOrderDetailsSpan?.SetTag("cache.hit", "true");
-                return JsonSerializer.Deserialize<OrderAdapter>(orderFromCache, _jsonSerializerOptions);
+                return JsonSerializer.Deserialize<OrderAdapter>(orderFromCache, _jsonSerializerOptions)!;
             }
             getOrderDetailsSpan?.SetTag("cache.hit", "false");
             
@@ -42,7 +42,7 @@ namespace PlantBasedPizza.Kitchen.Infrastructure
 
             var orderAdapter = JsonSerializer.Deserialize<OrderAdapter>(responseBody);
 
-            return orderAdapter;
+            return orderAdapter!;
         }
     }
 }

@@ -23,7 +23,7 @@ namespace PlantBasedPizza.FitnessFunctions.Drivers
             var deliveryRequests =
                 JsonSerializer.Deserialize<List<DeliveryRequest>>(await result.Content.ReadAsStringAsync());
 
-            return deliveryRequests;
+            return deliveryRequests!;
         }
 
         public async Task AssignDriver(string orderIdentifier, string driverName)
@@ -68,7 +68,7 @@ namespace PlantBasedPizza.FitnessFunctions.Drivers
             var deliveryRequests =
                 JsonSerializer.Deserialize<List<DeliveryRequest>>(await result.Content.ReadAsStringAsync());
 
-            return deliveryRequests;
+            return deliveryRequests!;
         }
     }
 }

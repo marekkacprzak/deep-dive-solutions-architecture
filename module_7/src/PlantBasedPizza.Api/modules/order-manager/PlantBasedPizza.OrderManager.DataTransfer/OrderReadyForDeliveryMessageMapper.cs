@@ -22,7 +22,7 @@ public class OrderReadyForDeliveryMessageMapper: IAmAMessageMapper<OrderReadyFor
 
     public OrderReadyForDeliveryEventV1 MapToRequest(Message message)
     {
-        return JsonSerializer.Deserialize<OrderReadyForDeliveryEventV1>(message.Body.Value, _jsonSerializerOptions);
+        return JsonSerializer.Deserialize<OrderReadyForDeliveryEventV1>(message.Body.Value, _jsonSerializerOptions)!;
     }
 
     public IRequestContext? Context { get; set; }

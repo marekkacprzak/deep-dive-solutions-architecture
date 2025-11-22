@@ -80,7 +80,7 @@ internal class RecipeRepositoryPostgres(
 
     public async Task Add(Recipe? recipe)
     {
-        await context.Recipes.AddAsync(recipe);
+        await context.Recipes.AddAsync(recipe!);
         await context.SaveChangesAsync();
         
         await cache.RemoveAsync(RecipeListCacheKey);
@@ -88,7 +88,7 @@ internal class RecipeRepositoryPostgres(
 
     public async Task Update(Recipe? recipe)
     {
-        context.Recipes.Update(recipe);
+        context.Recipes.Update(recipe!);
         await context.SaveChangesAsync();
         
         await cache.RemoveAsync(RecipeListCacheKey);

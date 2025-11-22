@@ -6,7 +6,7 @@ namespace PlantBasedPizza.Kitchen.Core
         
         Task Update(KitchenRequest kitchenRequest);
 
-        Task<KitchenRequest> Retrieve(string orderIdentifier);
+        Task<KitchenRequest?> Retrieve(string orderIdentifier);
         
         Task<IEnumerable<KitchenRequest>> GetNew();
 

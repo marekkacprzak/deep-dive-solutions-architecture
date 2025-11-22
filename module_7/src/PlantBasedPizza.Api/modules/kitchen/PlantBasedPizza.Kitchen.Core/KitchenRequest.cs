@@ -18,12 +18,12 @@ namespace PlantBasedPizza.Kitchen.Core
             this.Recipes = new List<RecipeAdapter>();
         }
         
-        public KitchenRequest(string orderIdentifier, List<RecipeAdapter> recipes)
+        public KitchenRequest(string? orderIdentifier, List<RecipeAdapter> recipes)
         {
-            Guard.AgainstNullOrEmpty(orderIdentifier, nameof(orderIdentifier));
+            Guard.AgainstNullOrEmpty(orderIdentifier!, nameof(orderIdentifier));
             
             this.KitchenRequestId = Guid.NewGuid().ToString();
-            this.OrderIdentifier = orderIdentifier;
+            this.OrderIdentifier = orderIdentifier!;
             this.OrderReceivedOn = DateTime.Now.ToUniversalTime();
             this.OrderState = OrderState.NEW;
             this.Recipes = recipes;

@@ -21,7 +21,7 @@ namespace PlantBasedPizza.Kitchen.Infrastructure
 
             foreach (var orderItem in order.OrderItems)
             {
-                orderAdapter.Items.Add(new OrderItemAdapter()
+                orderAdapter.Items!.Add(new OrderItemAdapter()
                 {
                     ItemName = orderItem.ItemName,
                     RecipeIdentifier = orderItem.RecipeIdentifier,

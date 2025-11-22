@@ -5,6 +5,6 @@ namespace PlantBasedPizza.Kitchen.Core.Adapters
     public record OrderAdapter
     {
         [JsonPropertyName("items")]
-        public List<OrderItemAdapter> Items { get; init; }
+        public List<OrderItemAdapter>? Items { get; init; }
     }
 }

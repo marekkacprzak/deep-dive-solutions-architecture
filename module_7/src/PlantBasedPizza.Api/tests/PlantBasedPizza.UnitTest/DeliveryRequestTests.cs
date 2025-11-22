@@ -50,7 +50,7 @@ namespace PlantBasedPizza.UnitTest
         {
             var mockRepo = A.Fake<IDeliveryRequestRepository>();
             // Set up the repository to return null, indicating no existing delivery request
-            A.CallTo(() => mockRepo.GetDeliveryStatusForOrder(A<string>._)).Returns((DeliveryRequest)null);
+            A.CallTo(() => mockRepo.GetDeliveryStatusForOrder(A<string>._)).Returns((DeliveryRequest?)null);
             var mockLogger = A.Fake<ILogger<OrderReadyForDeliveryEventHandler>>();
 
             var handler = new OrderReadyForDeliveryEventHandler(mockRepo, mockLogger);

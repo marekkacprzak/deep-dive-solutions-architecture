@@ -17,7 +17,7 @@ public class OrderPrepCompleteKafkaEventHandler(IServiceScopeFactory serviceScop
     [SubscribeOperation(typeof(OrderPrepCompleteEventV1), Summary = "Handle an order prep completed event.",
         OperationId = "kitchen.prep-complete")]
     [RequestLoggingAsync(step: 1, timing: HandlerTiming.Before)]
-    // [UseResiliencePipeline(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]
+    [UseResiliencePipelineAsync(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]
     public override async Task<OrderPrepCompleteEventV1> HandleAsync(OrderPrepCompleteEventV1 command, CancellationToken cancellationToken = default)
     {
         using var scope = serviceScopeFactory.CreateScope();

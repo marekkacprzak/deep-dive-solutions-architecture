@@ -75,6 +75,8 @@ public static class Setup
             SaslMechanisms = SaslMechanism.Plain
         });
 
+        var requestTypes = GetRequestTypes(mapperAssemblies);
+
         services.AddConsumers(options =>
             {
                 options.InboxConfiguration = new InboxConfiguration(
@@ -83,7 +85,7 @@ public static class Setup
                 options.DefaultChannelFactory = new ChannelFactory(consumerFactory);
                 options.ResiliencePipelineRegistry = new ResiliencePipelineRegistry<string>()
                     .AddBrighterDefault()
-                    .AddDefaultRetries();
+                    .AddDefaultRetries(requestTypes);
                 options.InstrumentationOptions = InstrumentationOptions.All;
                 options.Subscriptions = subscriptions;
             })
@@ -112,9 +114,14 @@ public static class Setup
         IConfiguration configuration, string applicationName, List<PublicEvent>? messageTopics,
         params Assembly[] mapperAssemblies)
     {
+        var requestTypes = GetRequestTypes(mapperAssemblies);
+
         var brighter = services.AddBrighter(options =>
         {
             options.InstrumentationOptions = InstrumentationOptions.All;
+            options.ResiliencePipelineRegistry = new ResiliencePipelineRegistry<string>()
+                .AddBrighterDefault()
+                .AddDefaultRetries(requestTypes);
         });
 
         if (messageTopics is null || !messageTopics.Any()) return services;
@@ -132,6 +139,12 @@ public static class Setup
             .AutoFromAssemblies(mapperAssemblies);
 
         return services;
+    }
+
+    private static IEnumerable<Type> GetRequestTypes(Assembly[] assemblies)
+    {
+        return assemblies.SelectMany(a => a.GetTypes())
+            .Where(t => typeof(IRequest).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
     }
 
     private static IAmAProducerRegistry GetKafkaProducerRegistry(IConfiguration configuration, string applicationName,

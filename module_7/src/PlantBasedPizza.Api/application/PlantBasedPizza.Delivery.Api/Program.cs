@@ -38,12 +38,12 @@ builder.Services.AddDeliveryModuleInfrastructure(builder.Configuration, override
     {
         new DriverCollectedOrderEventV1("", ""),
         new OrderDeliveredEventV1("")
-    })
+    }, typeof(DriverCollectedOrderEventV1).Assembly, typeof(OrderDeliveredEventV1).Assembly)
     .AddMessageConsumers(builder.Configuration, applicationName, new[]
     {
         new EventSubscription<OrderReadyForDeliveryEventV1>(applicationName, "delivery.orderReadyForDelivery",
             OrderReadyForDeliveryEventV1.EventTypeName)
-    })
+    }, typeof(OrderSubmittedEventV1).Assembly, typeof(OrderReadyForDeliveryEventV1).Assembly)
     .AddHttpClient();
 
 builder.Services.AddRateLimiter(options =>

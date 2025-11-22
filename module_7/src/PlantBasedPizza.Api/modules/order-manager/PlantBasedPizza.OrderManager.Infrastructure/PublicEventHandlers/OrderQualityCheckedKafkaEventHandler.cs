@@ -19,7 +19,7 @@ public class OrderQualityCheckedKafkaEventHandler(
     [SubscribeOperation(typeof(OrderQualityCheckedEventV1), Summary = "Handle an order quality event.",
         OperationId = "kitchen.quality-checked")]
     [RequestLoggingAsync(1, HandlerTiming.Before)]
-    // [UseResiliencePipeline(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]
+    [UseResiliencePipelineAsync(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]
     public override async Task<OrderQualityCheckedEventV1> HandleAsync(OrderQualityCheckedEventV1 command, CancellationToken cancellationToken = default)
     {
         using var scope = serviceScopeFactory.CreateScope();

@@ -7,9 +7,6 @@ using PlantBasedPizza.Kitchen.Core.Handlers;
 using PlantBasedPizza.OrderManager.DataTransfer;
 using PlantBasedPizza.Shared.Events;
 using PlantBasedPizza.Shared.Policies;
-using Polly;
-using Polly.CircuitBreaker;
-using Polly.Retry;
 using Saunter.Attributes;
 using OrderSubmittedEvent = PlantBasedPizza.Kitchen.Core.Handlers.OrderSubmittedEvent;
 
@@ -22,47 +19,22 @@ public class OrderSubmittedKafkaEventHandler(
     ILogger<OrderSubmittedKafkaEventHandler> logger)
     : RequestHandlerAsync<OrderSubmittedEventV1>
 {
-    private static readonly ResiliencePipeline _resiliencePipeline = new ResiliencePipelineBuilder()
-        .AddRetry(new RetryStrategyOptions
-        {
-            Delay = TimeSpan.FromMilliseconds(100),
-            MaxRetryAttempts = 5,
-            BackoffType = DelayBackoffType.Exponential,
-            UseJitter = true,
-            OnRetry = args =>
-            {
-                Console.WriteLine($"Retry attempt {args.AttemptNumber} after {args.RetryDelay}");
-                return default;
-            }
-        })
-        .AddTimeout(TimeSpan.FromMilliseconds(500))
-        .AddCircuitBreaker(new CircuitBreakerStrategyOptions
-        {
-            BreakDuration = TimeSpan.FromSeconds(2),
-            FailureRatio = 0.5,
-            MinimumThroughput = 10
-        })
-        .Build();
-
     [Channel("order-manager.order-submitted")] // Creates a Channel
     [SubscribeOperation(typeof(OrderSubmittedEventV1), Summary = "Handle an order submitted event.",
         OperationId = "order-manager.order-submitted")]
     [RequestLoggingAsync(1, HandlerTiming.Before)]
-    //[UseResiliencePipelineAsync(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]
+    [UseResiliencePipelineAsync(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]
     public override async Task<OrderSubmittedEventV1> HandleAsync(OrderSubmittedEventV1 command,
         CancellationToken cancellationToken = new())
     {
         try
         {
-            await _resiliencePipeline.ExecuteAsync(async ct =>
-            {
                 logger.LogInformation("Handling OrderSubmittedEvent for OrderId: {OrderId}", command.OrderIdentifier);
 
                 using var scope = serviceScopeFactory.CreateScope();
                 var handler = scope.ServiceProvider.GetRequiredService<OrderSubmittedEventHandler>();
 
                 await handler.Handle(new OrderSubmittedEvent(command.OrderIdentifier));
-            }, cancellationToken);
         }
         // Generic exception handling to ensure all errors get routed to the DLQ
         catch (Exception ex)

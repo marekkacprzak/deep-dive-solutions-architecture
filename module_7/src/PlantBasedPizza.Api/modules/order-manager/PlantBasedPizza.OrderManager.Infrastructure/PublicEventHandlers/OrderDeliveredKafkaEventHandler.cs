@@ -21,7 +21,7 @@ public class OrderDeliveredKafkaEventHandler(IServiceScopeFactory serviceScopeFa
     [SubscribeOperation(typeof(OrderDeliveredEvent), Summary = "Handle an order delivered event.",
         OperationId = "delivery.order-delivered")]
     [RequestLoggingAsync(step: 1, timing: HandlerTiming.Before)]
-    // [UseResiliencePipeline(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]
+    [UseResiliencePipelineAsync(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]
     public override async Task<OrderDeliveredEventV1> HandleAsync(OrderDeliveredEventV1 command, CancellationToken cancellationToken = default)
     {
         using var scope = serviceScopeFactory.CreateScope();

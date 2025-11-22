@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using PlantBasedPizza.Kitchen.Core;
 using PlantBasedPizza.Kitchen.Core.Handlers;
 using PlantBasedPizza.Kitchen.Core.Services;
-using PlantBasedPizza.Shared.Events;
 using PlantBasedPizza.Shared.Policies;
 
 namespace PlantBasedPizza.Kitchen.Infrastructure

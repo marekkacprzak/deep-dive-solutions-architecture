@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Threading.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Paramore.Brighter;
@@ -45,7 +44,7 @@ builder.Services
         new OrderPrepCompleteEventV1(""),
         new OrderBakedEventV1(""),
         new OrderQualityCheckedEventV1("")
-    }, Assembly.Load("PlantBasedPizza.Kitchen.DataTransfer"))
+    }, typeof(OrderSubmittedEventV1).Assembly)
     .AddMessageConsumers(builder.Configuration, applicationName, new Subscription[3]
     {
         new EventSubscription<OrderSubmittedEventV1>(applicationName, "order-manager.order-submitted",
@@ -54,7 +53,7 @@ builder.Services
             RecipeCreatedEventV1.EventTypeName),
         new EventSubscription<OrderBakedEventV1>(applicationName, "kitchen.order-baked",
             OrderBakedEventV1.EventTypeName)
-    })
+    }, typeof(OrderSubmittedEventV1).Assembly, typeof(RecipeCreatedEventV1).Assembly, typeof(OrderBakedEventV1).Assembly)
     .AddHttpClient();
 
 builder.Services.AddRateLimiter(options =>

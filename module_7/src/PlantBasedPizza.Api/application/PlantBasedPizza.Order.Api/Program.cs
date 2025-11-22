@@ -54,7 +54,7 @@ builder.Services.AddOrderManagerInfrastructure(builder.Configuration, overrideCo
             OrderQualityCheckedEventV1.EventTypeName),
         new EventSubscription<RecipeCreatedEventV1>(applicationName, "recipe.recipe-created",
             RecipeCreatedEventV1.EventTypeName),
-    })
+    }, typeof(DriverCollectedOrderEventV1).Assembly, typeof(OrderBakedEventV1).Assembly, typeof(OrderPreparingEventV1).Assembly, typeof(OrderPrepCompleteEventV1).Assembly, typeof(OrderQualityCheckedEventV1).Assembly, typeof(RecipeCreatedEventV1).Assembly)
     .AddHttpClient();
 
 builder.Services.AddRateLimiter(options =>

@@ -1,13 +1,11 @@
-
-
-
-
 using Microsoft.Extensions.DependencyInjection;
 using Paramore.Brighter;
 using Paramore.Brighter.Logging.Attributes;
+using Paramore.Brighter.Policies.Attributes;
 using PlantBasedPizza.Delivery.DataTransfer;
 using PlantBasedPizza.OrderManager.Core.Handlers;
 using PlantBasedPizza.Shared.Events;
+using PlantBasedPizza.Shared.Policies;
 using Saunter.Attributes;
 
 namespace PlantBasedPizza.OrderManager.Infrastructure.PublicEventHandlers;
@@ -18,7 +16,7 @@ public class DriverCollectedOrderKafkaEventHandler(IServiceScopeFactory serviceS
     [Channel("delivery.driver-collected")] // Creates a Channel
     [SubscribeOperation(typeof(DriverCollectedOrderEvent), Summary = "Handle a driver order collected event.", OperationId = "delivery.driver-collected")]
     [RequestLoggingAsync(step: 1, timing: HandlerTiming.Before)]
-    // [UseResiliencePipeline(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]
+    [UseResiliencePipelineAsync(step: 2, policy: Retry.EXPONENTIAL_RETRYPOLICYASYNC)]
     public override async Task<DriverCollectedOrderEventV1> HandleAsync(DriverCollectedOrderEventV1 command, CancellationToken cancellationToken = default)
     {
         using var scope = serviceScopeFactory.CreateScope();

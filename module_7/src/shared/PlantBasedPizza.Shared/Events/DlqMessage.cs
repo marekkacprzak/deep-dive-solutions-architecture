@@ -7,36 +7,42 @@ namespace PlantBasedPizza.Shared.Events;
 
 public class DLQMessage : PublicEvent
 {
-    private string eventName;
+    private string _eventName = string.Empty;
+    
     [JsonConstructor]
     public DLQMessage()
     {
+        Data = string.Empty;
+        EventVersion = string.Empty;
     }
     
     public DLQMessage(string eventName) : base()
     {
-        this.eventName = eventName;
+        _eventName = eventName;
+        Data = string.Empty;
+        EventVersion = string.Empty;
     }
 
-    public override string EventName => eventName;
+    public override string EventName => _eventName;
     public override string EventVersion { get; }
     public string Data { get; set; }
+    
     [JsonIgnore]
-    public Activity Span { get; set; }
+    public new Activity? Span { get; set; }
+    
     public override string AsString()
     {
         return JsonSerializer.Serialize(this);
     }
 
-    public Id? CorrelationId { get; set; }
-    public Id Id { get; set; }
+    public new Id? Id { get; set; }
 }
 
 public class DLQMessageMapper : IAmAMessageMapper<DLQMessage>
 {
     public Message MapToMessage(DLQMessage request, Publication publication)
     {
-        var header = new MessageHeader(request.Id, $"{request.EventName}.deadletter", MessageType.MT_EVENT);
+        var header = new MessageHeader(request.Id ?? new Id(Guid.NewGuid().ToString()), $"{request.EventName}.deadletter", MessageType.MT_EVENT);
         var body = new MessageBody(request.Data);
         var message = new Message(header, body);
         return message;

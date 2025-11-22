@@ -18,7 +18,7 @@ public class OrderPrepCompleteMessageMapper: IAmAMessageMapper<OrderPrepComplete
 
     public OrderPrepCompleteEventV1 MapToRequest(Message message)
     {
-        return JsonSerializer.Deserialize<OrderPrepCompleteEventV1>(message.Body.Value);
+        return JsonSerializer.Deserialize<OrderPrepCompleteEventV1>(message.Body.Value)!;
     }
 
     public IRequestContext? Context { get; set; }

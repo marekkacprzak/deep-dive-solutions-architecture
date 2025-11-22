@@ -25,7 +25,7 @@ public abstract class PublicEvent : IPublicEvent, IEvent
     public Id? CorrelationId { get; set; }
     public Id Id { get; set; }
 
-    public Activity Span
+    public Activity? Span
     {
         get => Activity.Current;
         set

@@ -70,7 +70,7 @@ public static class Setup
         var consumerFactory = new KafkaMessageConsumerFactory(new KafkaMessagingGatewayConfiguration
         {
             Name = applicationName,
-            BootStrapServers = new[] { configuration["Messaging:Kafka"] },
+            BootStrapServers = new[] { configuration["Messaging:Kafka"] ?? "localhost:9092" },
             SecurityProtocol = SecurityProtocol.Plaintext,
             SaslMechanisms = SaslMechanism.Plain
         });
@@ -144,7 +144,7 @@ public static class Setup
             new KafkaMessagingGatewayConfiguration
             {
                 Name = applicationName,
-                BootStrapServers = new[] { configuration["Messaging:Kafka"] },
+                BootStrapServers = new[] { configuration["Messaging:Kafka"] ?? "localhost:9092" },
                 SecurityProtocol = SecurityProtocol.Plaintext,
                 SaslMechanisms = SaslMechanism.Plain
             },

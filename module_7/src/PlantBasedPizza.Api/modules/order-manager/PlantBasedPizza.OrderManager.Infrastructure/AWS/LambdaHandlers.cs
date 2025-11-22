@@ -24,6 +24,11 @@ public class Handlers(IServiceScopeFactory serviceScopeFactory)
             {
                 var data = JsonSerializer.Deserialize<OrderDeliveredEventV1>(record.Value);
 
+                if (data is null)
+                {
+                    continue;
+                }
+
                 await handler.Handle(new OrderDeliveredEvent(data.OrderIdentifier));
             }
         }

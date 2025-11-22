@@ -151,7 +151,7 @@ public class OrderController : ControllerBase
     /// <summary>
     /// Submit an order.
     /// </summary>
-    /// <param name="orderIdentifier">The order to submit.</param>
+    /// <param name="request">The submit order command.</param>
     /// <returns></returns>
     [HttpPost("{orderIdentifier}/submit")]
     public async Task<OrderDto?> SubmitOrder([FromBody] SubmitOrderCommand request)

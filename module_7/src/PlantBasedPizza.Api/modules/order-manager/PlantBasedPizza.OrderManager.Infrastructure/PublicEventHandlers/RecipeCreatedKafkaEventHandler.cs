@@ -14,8 +14,7 @@ namespace PlantBasedPizza.OrderManager.Infrastructure.PublicEventHandlers;
 [AsyncApi]
 public class RecipeCreatedKafkaEventHandler(
     IDistributedCache cache,
-    IAmACommandProcessor processor,
-    ILogger<RecipeCreatedKafkaEventHandler> logger)
+    IAmACommandProcessor processor)
     : RequestHandlerAsync<RecipeCreatedEventV1>
 {
     [Channel("recipe.recipe-created")]
@@ -37,7 +36,7 @@ public class RecipeCreatedKafkaEventHandler(
                 cancellationToken);
         }
         // Generic exception handling to ensure all errors get routed to the DLQ
-        catch (Exception ex)
+        catch (Exception)
         {
             await FallbackAsync(command);
         }

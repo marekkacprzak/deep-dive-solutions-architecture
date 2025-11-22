@@ -50,37 +50,49 @@ public class OrderOutboxWorker(ILogger<OrderOutboxWorker> logger, IServiceScopeF
                         case nameof(OrderCreatedEvent):
                             var orderCreatedEvent = JsonSerializer.Deserialize<OrderCreatedEvent>(outboxItem.EventData, _jsonSerializerOptions);
                             
-                            // Call domain event handlers
-                            await domainEventDispatcher.PublishAsync(orderCreatedEvent);
-                            
-                            // Publish the public event externally
-                            await eventPublisher.Publish(new OrderCreatedEventV1(orderCreatedEvent!.OrderIdentifier));
-                            outboxItem.Processed = true;
+                            if (orderCreatedEvent is not null)
+                            {
+                                // Call domain event handlers
+                                await domainEventDispatcher.PublishAsync(orderCreatedEvent);
+                                
+                                // Publish the public event externally
+                                await eventPublisher.Publish(new OrderCreatedEventV1(orderCreatedEvent.OrderIdentifier));
+                                outboxItem.Processed = true;
+                            }
                             break;
                         case nameof(OrderSubmittedEvent):
                             var orderSubmittedEvent = JsonSerializer.Deserialize<OrderSubmittedEvent>(outboxItem.EventData, _jsonSerializerOptions);
-                            await domainEventDispatcher.PublishAsync(orderSubmittedEvent);
-                            await eventPublisher.Publish(new OrderSubmittedEventV1(orderSubmittedEvent!.OrderIdentifier));
-                            outboxItem.Processed = true;
+                            if (orderSubmittedEvent is not null)
+                            {
+                                await domainEventDispatcher.PublishAsync(orderSubmittedEvent);
+                                await eventPublisher.Publish(new OrderSubmittedEventV1(orderSubmittedEvent.OrderIdentifier));
+                                outboxItem.Processed = true;
+                            }
                             break;
                         case nameof(OrderReadyForDeliveryEvent):
                             var orderReadyForDeliveryEvent = JsonSerializer.Deserialize<OrderReadyForDeliveryEvent>(outboxItem.EventData, _jsonSerializerOptions);
-                            await domainEventDispatcher.PublishAsync(orderReadyForDeliveryEvent);
-                            await eventPublisher.Publish(new OrderReadyForDeliveryEventV1(
-                                orderReadyForDeliveryEvent!.OrderIdentifier,
-                                orderReadyForDeliveryEvent.DeliveryAddressLine1,
-                                orderReadyForDeliveryEvent.DeliveryAddressLine2,
-                                orderReadyForDeliveryEvent.DeliveryAddressLine3,
-                                orderReadyForDeliveryEvent.DeliveryAddressLine4,
-                                orderReadyForDeliveryEvent.DeliveryAddressLine5,
-                                orderReadyForDeliveryEvent.Postcode));
-                            outboxItem.Processed = true;
+                            if (orderReadyForDeliveryEvent is not null)
+                            {
+                                await domainEventDispatcher.PublishAsync(orderReadyForDeliveryEvent);
+                                await eventPublisher.Publish(new OrderReadyForDeliveryEventV1(
+                                    orderReadyForDeliveryEvent.OrderIdentifier,
+                                    orderReadyForDeliveryEvent.DeliveryAddressLine1,
+                                    orderReadyForDeliveryEvent.DeliveryAddressLine2,
+                                    orderReadyForDeliveryEvent.DeliveryAddressLine3,
+                                    orderReadyForDeliveryEvent.DeliveryAddressLine4,
+                                    orderReadyForDeliveryEvent.DeliveryAddressLine5,
+                                    orderReadyForDeliveryEvent.Postcode));
+                                outboxItem.Processed = true;
+                            }
                             break;
                         case nameof(OrderCompletedEvent):
                             var orderCompletedEvent = JsonSerializer.Deserialize<OrderCompletedEvent>(outboxItem.EventData, _jsonSerializerOptions);
-                            await domainEventDispatcher.PublishAsync(orderCompletedEvent);
-                            await eventPublisher.Publish(new OrderCompletedEventV1(orderCompletedEvent!.OrderIdentifier));
-                            outboxItem.Processed = true;
+                            if (orderCompletedEvent is not null)
+                            {
+                                await domainEventDispatcher.PublishAsync(orderCompletedEvent);
+                                await eventPublisher.Publish(new OrderCompletedEventV1(orderCompletedEvent.OrderIdentifier));
+                                outboxItem.Processed = true;
+                            }
                             break;
                         default:
                             logger.LogWarning("Unknown event type: {EventType}", outboxItem.EventType);

@@ -78,7 +78,7 @@ var app = builder.Build();
 
 app.UseCors("AllowAll");
 
-var serviceScopeFactory = app.Services.GetService<IServiceScopeFactory>();
+var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
 using (var scope = serviceScopeFactory.CreateScope())
 {
     var deliveryDbContext = scope.ServiceProvider.GetRequiredService<DeliveryDbContext>();

@@ -14,7 +14,7 @@ public class DriverCollectedOrderMessageMapper: IAmAMessageMapper<DriverCollecte
 
     public DriverCollectedOrderEventV1 MapToRequest(Message message)
     {
-        return JsonSerializer.Deserialize<DriverCollectedOrderEventV1>(message.Body.Value);
+        return JsonSerializer.Deserialize<DriverCollectedOrderEventV1>(message.Body.Value) ?? throw new InvalidOperationException("Failed to deserialize message");
     }
 
     public IRequestContext? Context { get; set; }

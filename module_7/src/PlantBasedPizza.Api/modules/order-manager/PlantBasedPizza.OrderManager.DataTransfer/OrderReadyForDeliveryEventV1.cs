@@ -17,8 +17,8 @@ public class OrderReadyForDeliveryEventV1 : PublicEvent
     {
     }
 
-    public OrderReadyForDeliveryEventV1(string orderIdentifier, string addressLine1, string addressLine2,
-        string addressLine3, string addressLine4, string addressLine5, string postcode) : base()
+    public OrderReadyForDeliveryEventV1(string? orderIdentifier, string? addressLine1, string? addressLine2,
+        string? addressLine3, string? addressLine4, string? addressLine5, string? postcode) : base()
     {
         OrderIdentifier = orderIdentifier;
         DeliveryAddressLine1 = addressLine1;
@@ -29,19 +29,19 @@ public class OrderReadyForDeliveryEventV1 : PublicEvent
         Postcode = postcode;
     }
 
-    public string OrderIdentifier { get; init; }
+    public string? OrderIdentifier { get; init; }
 
-    public string DeliveryAddressLine1 { get; init; }
+    public string? DeliveryAddressLine1 { get; init; }
 
-    public string DeliveryAddressLine2 { get; init; }
+    public string? DeliveryAddressLine2 { get; init; }
 
-    public string DeliveryAddressLine3 { get; init; }
+    public string? DeliveryAddressLine3 { get; init; }
 
-    public string DeliveryAddressLine4 { get; init; }
+    public string? DeliveryAddressLine4 { get; init; }
 
-    public string DeliveryAddressLine5 { get; init; }
+    public string? DeliveryAddressLine5 { get; init; }
 
-    public string Postcode { get; init; }
+    public string? Postcode { get; init; }
 
     public override string EventName => EventTypeName;
 

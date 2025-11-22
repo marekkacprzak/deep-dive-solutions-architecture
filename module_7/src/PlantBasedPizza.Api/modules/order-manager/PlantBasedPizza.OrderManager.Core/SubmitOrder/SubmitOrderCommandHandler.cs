@@ -8,7 +8,17 @@ public class SubmitOrderCommandHandler(IOrderRepository orderRepository, IPaymen
     {
         try
         {
+            if (request.OrderIdentifier is null)
+            {
+                throw new ArgumentException("OrderIdentifier cannot be null");
+            }
+
             var order = await orderRepository.Retrieve(request.OrderIdentifier);
+            
+            if (order is null)
+            {
+                return null;
+            }
             
             var takePayment = await paymentService.TakePaymentFor(order);
 

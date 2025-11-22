@@ -18,7 +18,7 @@ public class OrderCreatedMessageMapper: IAmAMessageMapper<OrderCreatedEventV1> {
 
     public OrderCreatedEventV1 MapToRequest(Message message)
     {
-        return JsonSerializer.Deserialize<OrderCreatedEventV1>(message.Body.Value);
+        return JsonSerializer.Deserialize<OrderCreatedEventV1>(message.Body.Value)!;
     }
 
     public IRequestContext? Context { get; set; }

@@ -17,6 +17,11 @@ public class GetDeliveryQueryHandler
             
         var deliveryRequest = await this._deliveryRequestRepository.GetDeliveryStatusForOrder(query.OrderIdentifier);
 
+        if (deliveryRequest is null)
+        {
+            throw new ArgumentException($"Delivery request not found for order {query.OrderIdentifier}");
+        }
+
         return new DeliveryRequestDTO(deliveryRequest);
     }
 }

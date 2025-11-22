@@ -29,7 +29,7 @@ public class PerformanceTests
         var averageMilliseconds = performanceResults.Average();
         var p90Milliseconds = performanceResults.OrderBy(x => x).ElementAt((int)(performanceResults.Count * 0.9));
 
-        averageMilliseconds.Should().BeLessOrEqualTo(100, $"Average API response after 50 iterations took too long: {averageMilliseconds} ms");
-        p90Milliseconds.Should().BeLessOrEqualTo(450);
+        averageMilliseconds.Should().BeLessThanOrEqualTo(100, $"Average API response after 50 iterations took too long: {averageMilliseconds} ms");
+        p90Milliseconds.Should().BeLessThanOrEqualTo(450);
     }
 }

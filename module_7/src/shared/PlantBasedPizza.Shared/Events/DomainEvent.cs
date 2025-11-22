@@ -31,7 +31,7 @@ public abstract class DomainEvent : IDomainEvent
         }
     }
 
-    public Activity Span
+    public Activity? Span
     {
         get => Activity.Current;
         set

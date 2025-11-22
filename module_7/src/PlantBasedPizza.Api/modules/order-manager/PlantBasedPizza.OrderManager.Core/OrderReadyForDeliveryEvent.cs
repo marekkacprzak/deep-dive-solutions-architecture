@@ -15,7 +15,7 @@ namespace PlantBasedPizza.OrderManager.Core
             this.CorrelationId = CorrelationContext.GetCorrelationId();
         }
         
-        public OrderReadyForDeliveryEvent(string orderIdentifier, string addressLine1, string addressLine2, string addressLine3, string addressLine4, string addressLine5, string postcode)
+        public OrderReadyForDeliveryEvent(string? orderIdentifier, string? addressLine1, string? addressLine2, string? addressLine3, string? addressLine4, string? addressLine5, string? postcode)
         {
             this.EventId = Guid.NewGuid().ToString();
             this.EventDate = DateTime.Now.ToUniversalTime();

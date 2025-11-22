@@ -29,7 +29,6 @@
     <PackageReference Include="Microsoft.Extensions.ServiceDiscovery" />
     <PackageReference Include="MongoDB.Driver" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="FluentValidation" />

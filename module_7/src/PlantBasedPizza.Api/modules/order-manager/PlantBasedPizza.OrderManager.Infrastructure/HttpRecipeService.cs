@@ -24,7 +24,7 @@ namespace PlantBasedPizza.OrderManager.Infrastructure
             if (!string.IsNullOrEmpty(cachedRecipe))
             {
                 getRecipeActivity?.SetTag("cache.hit", "true");
-                return JsonSerializer.Deserialize<Recipe>(cachedRecipe, _jsonSerializerOptions);
+                return JsonSerializer.Deserialize<Recipe>(cachedRecipe, _jsonSerializerOptions) ?? throw new InvalidOperationException("Failed to deserialize recipe from cache");
             }
             
             getRecipeActivity?.SetTag("cache.hit", "false");
@@ -38,7 +38,7 @@ namespace PlantBasedPizza.OrderManager.Infrastructure
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
                 });
 
-            return JsonSerializer.Deserialize<Recipe>(await recipe.Content.ReadAsStringAsync(), _jsonSerializerOptions);
+            return JsonSerializer.Deserialize<Recipe>(await recipe.Content.ReadAsStringAsync(), _jsonSerializerOptions) ?? throw new InvalidOperationException("Failed to deserialize recipe from response");
         }
     }
 }

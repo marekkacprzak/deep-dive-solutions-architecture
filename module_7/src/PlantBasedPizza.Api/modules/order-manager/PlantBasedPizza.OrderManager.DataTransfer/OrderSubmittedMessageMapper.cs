@@ -21,7 +21,7 @@ public class OrderSubmittedMessageMapper : IAmAMessageMapper<OrderSubmittedEvent
     {
         var evt = JsonSerializer.Deserialize<OrderSubmittedEventV1>(message.Body.Value);
 
-        return evt;
+        return evt!;
     }
 
     public IRequestContext? Context { get; set; }

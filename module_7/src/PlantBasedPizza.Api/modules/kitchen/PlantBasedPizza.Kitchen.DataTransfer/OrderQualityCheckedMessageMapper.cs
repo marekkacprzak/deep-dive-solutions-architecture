@@ -18,7 +18,7 @@ public class OrderQualityCheckedMessageMapper: IAmAMessageMapper<OrderQualityChe
 
     public OrderQualityCheckedEventV1 MapToRequest(Message message)
     {
-        return JsonSerializer.Deserialize<OrderQualityCheckedEventV1>(message.Body.Value);
+        return JsonSerializer.Deserialize<OrderQualityCheckedEventV1>(message.Body.Value)!;
     }
 
     public IRequestContext? Context { get; set; }

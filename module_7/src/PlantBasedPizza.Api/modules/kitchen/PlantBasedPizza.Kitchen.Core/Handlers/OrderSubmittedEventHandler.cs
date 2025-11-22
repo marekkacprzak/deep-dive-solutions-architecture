@@ -32,6 +32,16 @@ namespace PlantBasedPizza.Kitchen.Core.Handlers
             
             var order = await orderManagerService.GetOrderDetails(evt.OrderIdentifier);
 
+            if (order is null)
+            {
+                return;
+            }
+
+            if (order.Items is null)
+            {
+                return;
+            }
+
             foreach (var recipe in order.Items)
             {
                 recipes.Add(await recipeService.GetRecipe(recipe.RecipeIdentifier));

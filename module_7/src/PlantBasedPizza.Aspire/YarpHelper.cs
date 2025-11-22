@@ -1,16 +1,15 @@
 ﻿using System.Xml.Linq;
-using Aspire.Hosting.Yarp;
 
 namespace PlantBasedPizza.Aspire;
 
 public static class YarpHelper
 {
-    public static async Task UpdateTestEndpoint(this IResourceBuilder<YarpResource> yarpProxy)
+    public static async Task UpdateTestEndpoint(this ProjectResource yarpProxy)
     {
         try
         {
             // Get the allocated endpoint
-            var endpoints = yarpProxy.Resource.Annotations.OfType<EndpointAnnotation>();
+            var endpoints = yarpProxy.Annotations.OfType<EndpointAnnotation>();
             var httpEndpoint = endpoints.FirstOrDefault(e => e.UriScheme == "http" || e.UriScheme == "https");
 
             var allocatedEndpoint = httpEndpoint?.AllocatedEndpoint;

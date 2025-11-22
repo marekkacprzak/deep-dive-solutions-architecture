@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
+    <Sdk Name="Aspire.AppHost.Sdk" Version="13.0.0" />
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsAspireHost>true</IsAspireHost>
@@ -16,26 +16,19 @@
         <PackageReference Include="Aspire.Hosting.Kafka" />
         <PackageReference Include="Aspire.Hosting.PostgreSQL" />
         <PackageReference Include="Aspire.Hosting.Valkey" />
-        <PackageReference Include="Aspire.Hosting.Yarp" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\PlantBasedPizza.Gateway\PlantBasedPizza.Gateway.csproj" />
       <ProjectReference Include="..\PlantBasedPizza.Api\application\PlantBasedPizza.Delivery.Api\PlantBasedPizza.Delivery.Api.csproj" />
       <ProjectReference Include="..\PlantBasedPizza.Api\application\PlantBasedPizza.Kitchen.Api\PlantBasedPizza.Kitchen.Api.csproj" />
       <ProjectReference Include="..\PlantBasedPizza.Api\application\PlantBasedPizza.Order.Api\PlantBasedPizza.Order.Api.csproj" />
       <ProjectReference Include="..\PlantBasedPizza.Api\application\PlantBasedPizza.Recipes.Api\PlantBasedPizza.Recipes.Api.csproj" />
-      <ProjectReference Include="..\PlantBasedPizza.Api\modules\deliver\PlantBasedPizza.Delivery.DataTransfer\PlantBasedPizza.Delivery.DataTransfer.csproj" />
-      <ProjectReference Include="..\PlantBasedPizza.Api\modules\kitchen\PlantBasedPizza.Kitchen.DataTransfer\PlantBasedPizza.Kitchen.DataTransfer.csproj" />
-        <ProjectReference Include="..\PlantBasedPizza.Api\modules\order-manager\PlantBasedPizza.OrderManager.DataTransfer\PlantBasedPizza.OrderManager.DataTransfer.csproj" />
-      <ProjectReference Include="..\PlantBasedPizza.Api\modules\order-manager\PlantBasedPizza.OrderManager.DataTransfer\PlantBasedPizza.OrderManager.DataTransfer.csproj" />
+      <ProjectReference Include="..\PlantBasedPizza.Api\modules\deliver\PlantBasedPizza.Delivery.DataTransfer\PlantBasedPizza.Delivery.DataTransfer.csproj" IsAspireProjectResource="false" />
+      <ProjectReference Include="..\PlantBasedPizza.Api\modules\kitchen\PlantBasedPizza.Kitchen.DataTransfer\PlantBasedPizza.Kitchen.DataTransfer.csproj" IsAspireProjectResource="false" />
+        <ProjectReference Include="..\PlantBasedPizza.Api\modules\order-manager\PlantBasedPizza.OrderManager.DataTransfer\PlantBasedPizza.OrderManager.DataTransfer.csproj" IsAspireProjectResource="false" />
       <ProjectReference Include="..\PlantBasedPizza.Api\modules\order-manager\PlantBasedPizza.Worker\PlantBasedPizza.Worker.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Update="yarp.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
     </ItemGroup>
 
 </Project>

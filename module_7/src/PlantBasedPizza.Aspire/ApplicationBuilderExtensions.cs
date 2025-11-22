@@ -1,3 +1,4 @@
+using Aspire.Hosting;
 using Confluent.Kafka;
 using Confluent.Kafka.Admin;
 using System.Xml.Linq;
@@ -122,8 +123,7 @@ public static class ApplicationBuilderExtensions
             .WaitFor(deliveryDb)
             .WaitFor(kafka);
 
-        var yarpProxy = builder.AddYarp("gateway")
-            .WithConfigFile("yarp.json")
+        var yarpProxy = builder.AddProject<Projects.PlantBasedPizza_Gateway>("gateway")
             .WithReference(orderManagerApplication)
             .WithReference(kitchenApplication)
             .WithReference(recipeApplication)
@@ -131,7 +131,7 @@ public static class ApplicationBuilderExtensions
 
         builder.Eventing.Subscribe<ResourceReadyEvent>(yarpProxy.Resource, async (@event, ct) =>
         {
-            await yarpProxy.UpdateTestEndpoint();
+            await yarpProxy.Resource.UpdateTestEndpoint();
         });
 
         return builder;

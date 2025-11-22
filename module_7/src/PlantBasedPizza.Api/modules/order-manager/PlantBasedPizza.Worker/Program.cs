@@ -44,7 +44,11 @@ builder.Services
         new OrderSubmittedEventV1(""),
         new OrderCompletedEventV1(""),
         new OrderReadyForDeliveryEventV1("", "", "", "", "", "", "")
-    }, Assembly.Load("PlantBasedPizza.OrderManager.DataTransfer"))
+    }, 
+    Assembly.Load("PlantBasedPizza.OrderManager.DataTransfer"),
+    Assembly.Load("PlantBasedPizza.Kitchen.DataTransfer"),
+    Assembly.Load("PlantBasedPizza.Delivery.DataTransfer"),
+    Assembly.Load("PlantBasedPizza.Recipes.DataTransfer"))
     .AddMessageConsumers(builder.Configuration, applicationName, new Subscription[7]
     {
         new EventSubscription<OrderPreparingEventV1>(applicationName, "order.orderPreparing",
@@ -62,6 +66,7 @@ builder.Services
         new EventSubscription<RecipeCreatedEventV1>(applicationName, "order.orderDelivered",
             RecipeCreatedEventV1.EventTypeName),
     }, 
+    Assembly.Load("PlantBasedPizza.OrderManager.DataTransfer"),
     Assembly.Load("PlantBasedPizza.Kitchen.DataTransfer"),
     Assembly.Load("PlantBasedPizza.Delivery.DataTransfer"),
     Assembly.Load("PlantBasedPizza.Recipes.DataTransfer"))

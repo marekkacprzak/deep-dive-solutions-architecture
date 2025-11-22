@@ -9,46 +9,10 @@ namespace PlantBasedPizza.Shared.Policies;
 
 public static class DefaultPolicieExtensions
 {
+
     public static ResiliencePipelineRegistry<string> AddDefaultRetries(this ResiliencePipelineRegistry<string> registry)
     {
-        registry
-            .TryAddBuilder(Retry.RETRYPOLICYASYNC,
-                (builder, _) => builder
-                    .AddRetry(new RetryStrategyOptions
-                    {
-                        Delay = TimeSpan.FromMilliseconds(50),
-                        MaxRetryAttempts = 3,
-                        BackoffType = DelayBackoffType.Linear
-                    })
-                    .AddTimeout(TimeSpan.FromMilliseconds(500))
-                    .AddCircuitBreaker(new CircuitBreakerStrategyOptions()
-                    {
-                        BreakDuration = TimeSpan.FromSeconds(2),
-                    }));
-        
-        registry
-            .TryAddBuilder(Retry.EXPONENTIAL_RETRYPOLICYASYNC,
-                (builder, _) => builder
-                    .AddRetry(new RetryStrategyOptions
-                    {
-                        Delay = TimeSpan.FromMilliseconds(100),
-                        MaxRetryAttempts = 5,
-                        BackoffType = DelayBackoffType.Exponential,
-                        UseJitter = true
-                    })
-                    .AddTimeout(TimeSpan.FromMilliseconds(500))
-                    .AddCircuitBreaker(new CircuitBreakerStrategyOptions()
-                    {
-                        BreakDuration = TimeSpan.FromSeconds(2),
-                    }));
-        return registry;
-    }
-
-    public static ResiliencePipelineRegistry<string> AddDefaultRetries(this ResiliencePipelineRegistry<string> registry, IEnumerable<Type> requestTypes)
-    {
-        registry.AddDefaultRetries();
-
-        foreach (var type in requestTypes)
+        foreach (var type in GetRequestTypes())
         {
             RegisterGenericRetry(registry, type, Retry.EXPONENTIAL_RETRYPOLICYASYNC, options => 
             {
@@ -66,6 +30,16 @@ public static class DefaultPolicieExtensions
             });
         }
         return registry;
+    }
+
+    private static IEnumerable<Type> GetRequestTypes()
+    {
+        var types = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
+            .Where(t => typeof(IRequest).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+            .Distinct()
+            .ToList();
+        
+        return types;
     }
 
     private static void RegisterGenericRetry(ResiliencePipelineRegistry<string> registry, Type type, string key, Action<RetryStrategyOptions> configureRetry)

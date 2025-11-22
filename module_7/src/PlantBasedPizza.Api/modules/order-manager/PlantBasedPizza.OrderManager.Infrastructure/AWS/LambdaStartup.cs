@@ -33,7 +33,7 @@ public class LambdaStartup
                 new OrderCreatedEventV1(""),
                 new OrderSubmittedEventV1(""),
                 new OrderCompletedEventV1("")
-            })
+            }, typeof(OrderCreatedEventV1).Assembly)
             .AddOrderManagerInfrastructure(configuration, overrideConnectionString)
             .AddPaymentInfrastructure()
             .AddSharedInfrastructure(configuration, applicationName)

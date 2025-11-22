@@ -19,6 +19,9 @@ public class SubmitOrderCommandHandler(IOrderRepository orderRepository, IPaymen
             {
                 return null;
             }
+
+            if (!order.Items.Any()) 
+                throw new ArgumentException("Cannot submit an order with no items");
             
             var takePayment = await paymentService.TakePaymentFor(order);
 
@@ -28,9 +31,6 @@ public class SubmitOrderCommandHandler(IOrderRepository orderRepository, IPaymen
             }
 
             ArgumentNullException.ThrowIfNull(order);
-
-            if (!order.Items.Any()) 
-                throw new ArgumentException("Cannot submit an order with no items");
 
             order.MarkAsSubmitted();
             order.AddHistory("Submitted order.");

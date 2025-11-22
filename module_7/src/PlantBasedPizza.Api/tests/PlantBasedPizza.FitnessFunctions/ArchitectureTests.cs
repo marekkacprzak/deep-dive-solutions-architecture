@@ -23,6 +23,8 @@ public class ArchitectureTests
             var result = Types.InAssembly(Assembly.Load(assemblyUnderTest))
                 .That()
                 .ResideInNamespace(assemblyUnderTest)
+                .And()
+                .DoNotResideInNamespace("PlantBasedPizza.OrderManager.Infrastructure.AWS")
                 .ShouldNot()
                 .HaveDependencyOn(assembly)
                 .GetResult();

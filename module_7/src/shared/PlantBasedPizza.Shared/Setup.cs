@@ -143,8 +143,12 @@ public static class Setup
 
     private static IEnumerable<Type> GetRequestTypes(Assembly[] assemblies)
     {
-        return assemblies.SelectMany(a => a.GetTypes())
-            .Where(t => typeof(IRequest).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+        var types = assemblies.SelectMany(a => a.GetTypes())
+            .Where(t => typeof(IRequest).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+            .Distinct()
+            .ToList();
+        
+        return types;
     }
 
     private static IAmAProducerRegistry GetKafkaProducerRegistry(IConfiguration configuration, string applicationName,
